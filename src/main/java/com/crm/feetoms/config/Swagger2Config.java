@@ -31,17 +31,17 @@ public class Swagger2Config {
     public Docket createRestApi() {
 
         // 设置显示的swagger环境信息
-        Profiles profiles = Profiles.of("dev", "test");
+//        Profiles profiles = Profiles.of("dev", "test");
         // 判断是否处在自己设定的环境当中
-        boolean flag = environment.acceptsProfiles(profiles);
+//        boolean flag = environment.acceptsProfiles(profiles);
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .groupName("分组名称")  // 配置api文档的分组
-                .enable(flag)  // 配置是否开启swagger
+                .enable(true)  // 配置是否开启swagger
                 .select()
                 //为当前包下controller生成API文档
-                .apis(RequestHandlerSelectors.basePackage("com.macro.mall.tiny.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.crm.feetoms.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 //添加登录认证

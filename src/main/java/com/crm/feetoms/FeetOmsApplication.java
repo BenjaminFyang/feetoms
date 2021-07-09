@@ -5,7 +5,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
-@MapperScan("com.crm.feetoms.mapper")
 @SpringBootApplication
 public class FeetOmsApplication {
 

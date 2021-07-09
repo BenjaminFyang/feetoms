@@ -1,7 +1,7 @@
 package com.crm.feetoms.service;
 
 
-import com.crm.feetoms.controller.UpdateAdminPasswordParam;
+import com.crm.feetoms.dto.UpdateAdminPasswordParam;
 import com.crm.feetoms.model.UmsAdmin;
 
 /**

@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.crm.feetoms.common.utils.JwtTokenUtil;
 
-import com.crm.feetoms.controller.UpdateAdminPasswordParam;
+import com.crm.feetoms.dto.UpdateAdminPasswordParam;
 import com.crm.feetoms.mapper.UmsAdminMapper;
 import com.crm.feetoms.model.UmsAdmin;
 import com.crm.feetoms.model.UmsAdminExample;

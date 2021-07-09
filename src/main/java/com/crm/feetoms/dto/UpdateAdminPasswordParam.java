@@ -1,4 +1,4 @@
-package com.crm.feetoms.controller;
+package com.crm.feetoms.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

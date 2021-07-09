@@ -2,6 +2,7 @@ package com.crm.feetoms.controller;
 
 import com.crm.feetoms.common.api.CommonResult;
 import com.crm.feetoms.dto.UmsAdminLoginParam;
+import com.crm.feetoms.dto.UpdateAdminPasswordParam;
 import com.crm.feetoms.model.UmsAdmin;
 import com.crm.feetoms.service.UmsAdminService;
 import io.swagger.annotations.Api;
@@ -76,6 +77,7 @@ public class UmsAdminController {
         } else if (status == -1) {
             return CommonResult.failed("提交参数不合法");
         } else if (status == -2) {
+
             return CommonResult.failed("找不到该用户");
         } else if (status == -3) {
             return CommonResult.failed("旧密码错误");

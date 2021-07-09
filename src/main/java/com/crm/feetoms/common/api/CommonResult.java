@@ -1,8 +1,12 @@
 package com.crm.feetoms.common.api;
 
+import lombok.Data;
+
 /**
  * 通用返回对象
  */
+
+@Data
 public class CommonResult<T> {
 
     private long code;
@@ -90,29 +94,5 @@ public class CommonResult<T> {
      */
     public static <T> CommonResult<T> forbidden(T data) {
         return new CommonResult<T>(ResultCode.FORBIDDEN.getCode(), ResultCode.FORBIDDEN.getMessage(), data);
-    }
-
-    public long getCode() {
-        return code;
-    }
-
-    public void setCode(long code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 }

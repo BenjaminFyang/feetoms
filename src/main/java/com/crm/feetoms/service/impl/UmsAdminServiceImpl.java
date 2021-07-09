@@ -1,7 +1,10 @@
 package com.crm.feetoms.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.crm.feetoms.common.utils.JwtTokenUtil;
 
+import com.crm.feetoms.controller.UpdateAdminPasswordParam;
 import com.crm.feetoms.mapper.UmsAdminMapper;
 import com.crm.feetoms.model.UmsAdmin;
 import com.crm.feetoms.model.UmsAdminExample;
@@ -93,5 +96,27 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         return token;
     }
 
+
+    @Override
+    public int updatePassword(UpdateAdminPasswordParam param) {
+        if (StrUtil.isEmpty(param.getUsername())
+                || StrUtil.isEmpty(param.getOldPassword())
+                || StrUtil.isEmpty(param.getNewPassword())) {
+            return -1;
+        }
+        UmsAdminExample example = new UmsAdminExample();
+        example.createCriteria().andUsernameEqualTo(param.getUsername());
+        List<UmsAdmin> adminList = adminMapper.selectByExample(example);
+        if (CollUtil.isEmpty(adminList)) {
+            return -2;
+        }
+        UmsAdmin umsAdmin = adminList.get(0);
+        if (!passwordEncoder.matches(param.getOldPassword(), umsAdmin.getPassword())) {
+            return -3;
+        }
+        umsAdmin.setPassword(passwordEncoder.encode(param.getNewPassword()));
+        adminMapper.updateByPrimaryKey(umsAdmin);
+        return 1;
+    }
 
 }

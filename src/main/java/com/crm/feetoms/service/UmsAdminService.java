@@ -1,6 +1,7 @@
 package com.crm.feetoms.service;
 
 
+import com.crm.feetoms.controller.UpdateAdminPasswordParam;
 import com.crm.feetoms.model.UmsAdmin;
 
 /**
@@ -26,6 +27,12 @@ public interface UmsAdminService {
      * @return 生成的JWT的token
      */
     String login(String username, String password);
+
+
+    /**
+     * 修改密码
+     */
+    int updatePassword(UpdateAdminPasswordParam updatePasswordParam);
 
 
 }

@@ -3,6 +3,9 @@ package com.crm.feetoms.service;
 
 import com.crm.feetoms.dto.UpdateAdminPasswordParam;
 import com.crm.feetoms.model.UmsAdmin;
+import com.crm.feetoms.model.UmsPermission;
+
+import java.util.List;
 
 /**
  * 后台管理员Service
@@ -33,6 +36,12 @@ public interface UmsAdminService {
      * 修改密码
      */
     int updatePassword(UpdateAdminPasswordParam updatePasswordParam);
+
+
+    /**
+     * 获取用户所有权限（包括角色权限和+-权限）
+     */
+    List<UmsPermission> getPermissionList(Long adminId);
 
 
 }

@@ -4,6 +4,7 @@ import com.crm.feetoms.common.api.CommonResult;
 import com.crm.feetoms.dto.UmsAdminLoginParam;
 import com.crm.feetoms.dto.UpdateAdminPasswordParam;
 import com.crm.feetoms.model.UmsAdmin;
+import com.crm.feetoms.model.UmsPermission;
 import com.crm.feetoms.service.UmsAdminService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -81,7 +83,16 @@ public class UmsAdminController {
         } else {
             return CommonResult.failed();
         }
+    }
 
+
+    @ApiOperation("获取用户所有权限（包括+-权限）")
+    @RequestMapping(value = "/permission/{adminId}", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<List<UmsPermission>> getPermissionList(@PathVariable Long adminId) {
+        LOGGER.info("获取用户所有权限（包括+-权限)");
+        List<UmsPermission> permissionList = adminService.getPermissionList(adminId);
+        return CommonResult.success(permissionList);
     }
 
 

@@ -8,6 +8,7 @@ import com.crm.feetoms.dto.UpdateAdminPasswordParam;
 import com.crm.feetoms.mapper.UmsAdminMapper;
 import com.crm.feetoms.model.UmsAdmin;
 import com.crm.feetoms.model.UmsAdminExample;
+import com.crm.feetoms.model.UmsPermission;
 import com.crm.feetoms.service.UmsAdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,8 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         UmsAdmin umsAdmin = new UmsAdmin();
         BeanUtils.copyProperties(umsAdminParam, umsAdmin);
         umsAdmin.setCreateTime(new Date());
+        umsAdmin.setUpdateTime(new Date());
+        umsAdmin.setDueDate(new Date());
         umsAdmin.setStatus(1);
         //查询是否有相同用户名的用户
         UmsAdminExample example = new UmsAdminExample();
@@ -114,6 +117,12 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         umsAdmin.setPassword(passwordEncoder.encode(param.getNewPassword()));
         adminMapper.updateByPrimaryKey(umsAdmin);
         return 1;
+    }
+
+
+    @Override
+    public List<UmsPermission> getPermissionList(Long adminId) {
+        return adminMapper.getPermissionList(adminId);
     }
 
 }

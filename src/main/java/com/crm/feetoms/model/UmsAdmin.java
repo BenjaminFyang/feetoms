@@ -2,6 +2,7 @@ package com.crm.feetoms.model;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.objenesis.SpringObjenesis;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -33,6 +34,12 @@ public class UmsAdmin implements Serializable {
 
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
+
+    @ApiModelProperty(value = "修改时间")
+    private Date updateTime;
+
+    @ApiModelProperty(value = "过期时间")
+    private Date dueDate;
 
     @ApiModelProperty(value = "最后登录时间")
     private Date loginTime;

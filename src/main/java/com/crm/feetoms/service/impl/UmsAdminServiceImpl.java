@@ -111,9 +111,6 @@ public class UmsAdminServiceImpl implements UmsAdminService {
             return -2;
         }
         UmsAdmin umsAdmin = adminList.get(0);
-        if (!passwordEncoder.matches(param.getOldPassword(), umsAdmin.getPassword())) {
-            return -3;
-        }
         umsAdmin.setPassword(passwordEncoder.encode(param.getNewPassword()));
         adminMapper.updateByPrimaryKey(umsAdmin);
         return 1;

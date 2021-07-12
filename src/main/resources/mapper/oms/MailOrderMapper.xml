@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crm.oms.mapper.MailOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.crm.oms.model.MailOrder">
+        <id column="id" property="id" />
+        <result column="order_number" property="orderNumber" />
+        <result column="order_email" property="orderEmail" />
+        <result column="SKU" property="sku" />
+        <result column="product_picture" property="productPicture" />
+        <result column="size" property="size" />
+        <result column="order_website" property="orderWebsite" />
+        <result column="original_price" property="originalPrice" />
+        <result column="payment_amount" property="paymentAmount" />
+        <result column="tracking_email" property="trackingEmail" />
+        <result column="order_state" property="orderState" />
+        <result column="carrier_company" property="carrierCompany" />
+        <result column="address" property="address" />
+        <result column="foreign_waybill_number" property="foreignWaybillNumber" />
+        <result column="waybill_status" property="waybillStatus" />
+        <result column="transit_status" property="transitStatus" />
+        <result column="delivery_status" property="deliveryStatus" />
+        <result column="order_time" property="orderTime" />
+        <result column="delivery_time" property="deliveryTime" />
+        <result column="note" property="note" />
+        <result column="is_locked" property="isLocked" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+</mapper>

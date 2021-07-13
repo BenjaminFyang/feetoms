@@ -38,3 +38,7 @@ jwt:
   secret: mySecret #JWT加解密使用的密钥
   expiration: 604800 #JWT的超期限时间(60*60*24)
   tokenHead: Bearer  #JWT负载中拿到开头
+
+logging:
+  level:
+    com.crm.oms.mapper: debug

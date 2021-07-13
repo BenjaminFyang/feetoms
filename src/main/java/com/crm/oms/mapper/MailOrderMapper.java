@@ -1,7 +1,11 @@
 package com.crm.oms.mapper;
 
+import com.crm.oms.dto.MailOrderParam;
 import com.crm.oms.model.MailOrder;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +16,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2021-07-12
  */
 public interface MailOrderMapper extends BaseMapper<MailOrder> {
+
+//
+//    List<MailOrder> list(@Param("mailOrderParam") MailOrderParam mailOrderParam,
+//                         @Param("pageSize") Integer pageSize,
+//                         @Param("pageNum") Integer pageNum);
 
 }

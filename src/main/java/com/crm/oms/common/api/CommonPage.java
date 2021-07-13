@@ -2,6 +2,7 @@ package com.crm.oms.common.api;
 
 import com.github.pagehelper.PageInfo;
 import org.springframework.data.domain.Page;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class CommonPage<T> {
      */
     public static <T> CommonPage<T> restPage(List<T> list) {
         CommonPage<T> result = new CommonPage<T>();
+        if (CollectionUtils.isEmpty(list)) {
+            return result;
+        }
         PageInfo<T> pageInfo = new PageInfo<T>(list);
         result.setTotalPage(pageInfo.getPages());
         result.setPageNum(pageInfo.getPageNum());

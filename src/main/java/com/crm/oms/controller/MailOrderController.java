@@ -12,12 +12,11 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 邮件订单信息表 前端控制器
@@ -40,13 +39,13 @@ public class MailOrderController {
 
     @ApiOperation(value = "订单信息列表")
     @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public CommonResult<CommonPage<MailOrder>> login(@RequestBody MailOrderParam mailOrderParam, BindingResult result) {
+    public CommonResult<CommonPage<MailOrder>> list(@Valid @RequestBody MailOrderParam mailOrderParam,
+                                                    @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
+                                                    @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
 
 
-        OrderStatusEnum type0 = OrderStatusEnum.TYPE0;
-
-
-        return null;
+        List<MailOrder> mailOrderList = mailOrderService.list(mailOrderParam, pageSize, pageNum);
+        return CommonResult.success(CommonPage.restPage(mailOrderList));
 
     }
 

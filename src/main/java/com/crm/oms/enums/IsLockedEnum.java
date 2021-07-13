@@ -1,4 +1,4 @@
-package com.crm.oms.common.enums;
+package com.crm.oms.enums;
 
 
 import lombok.Getter;
@@ -6,20 +6,18 @@ import lombok.Getter;
 import static java.util.Arrays.stream;
 
 @Getter
-public enum CarrierCompanyEnum {
+public enum IsLockedEnum {
 
-    TYPE0(0, "待反馈"),
-    TYPE1(1, "FedEx"),
-    TYPE2(2, "UPS");
+    TYPE0(0, "未锁定"),
+    TYPE1(1, "锁定");
 
     private final Integer code;
     private final String message;
 
-    CarrierCompanyEnum(Integer code, String message) {
+    IsLockedEnum(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
-
 
     /**
      * 校验是否是该枚举
@@ -28,6 +26,6 @@ public enum CarrierCompanyEnum {
      * @return true or false
      */
     public static boolean isValidEnum(Integer code) {
-        return stream(values()).anyMatch(carrierCompanyEnum -> carrierCompanyEnum.code.equals(code));
+        return stream(values()).anyMatch(isLockedEnum -> isLockedEnum.code.equals(code));
     }
 }

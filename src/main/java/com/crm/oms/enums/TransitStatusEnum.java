@@ -1,4 +1,4 @@
-package com.crm.oms.common.enums;
+package com.crm.oms.enums;
 
 
 import lombok.Getter;
@@ -6,15 +6,17 @@ import lombok.Getter;
 import static java.util.Arrays.stream;
 
 @Getter
-public enum IsLockedEnum {
+public enum TransitStatusEnum {
 
-    TYPE0(0, "未锁定"),
-    TYPE1(1, "锁定");
+    TYPE0(0, "未操作"),
+    TYPE1(1, "已确认"),
+    TYPE2(2, "未确认"),
+    TYPE3(3, "异常");
 
     private final Integer code;
     private final String message;
 
-    IsLockedEnum(Integer code, String message) {
+    TransitStatusEnum(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
@@ -26,6 +28,7 @@ public enum IsLockedEnum {
      * @return true or false
      */
     public static boolean isValidEnum(Integer code) {
-        return stream(values()).anyMatch(isLockedEnum -> isLockedEnum.code.equals(code));
+        return stream(values()).anyMatch(transitStatusEnum -> transitStatusEnum.code.equals(code));
     }
+
 }

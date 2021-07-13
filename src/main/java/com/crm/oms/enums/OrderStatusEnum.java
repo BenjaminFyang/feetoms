@@ -1,4 +1,4 @@
-package com.crm.oms.common.enums;
+package com.crm.oms.enums;
 
 import lombok.Getter;
 
@@ -22,8 +22,8 @@ public enum OrderStatusEnum {
     TYPE5(5, "已签收"),
     TYPE6(6, "召回");
 
-    private final Integer code;
-    private final String message;
+    private Integer code;
+    private String message;
 
     OrderStatusEnum(Integer code, String message) {
         this.code = code;

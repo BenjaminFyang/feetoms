@@ -1,4 +1,4 @@
-package com.crm.oms.common.enums;
+package com.crm.oms.enums;
 
 
 import lombok.Getter;

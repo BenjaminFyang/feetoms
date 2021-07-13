@@ -1,12 +1,17 @@
 package com.crm.oms.model;
 
 import java.math.BigDecimal;
+
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
+
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -23,10 +28,10 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("mail_order")
-@ApiModel(value="MailOrder对象", description="邮件订单信息表")
+@ApiModel(value = "MailOrder对象", description = "邮件订单信息表")
 public class MailOrder implements Serializable {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "主键id")
     @TableId(value = "id", type = IdType.AUTO)
@@ -48,8 +53,8 @@ public class MailOrder implements Serializable {
     @ApiModelProperty(value = "尺码")
     private String size;
 
-    @ApiModelProperty(value = "下单网站")
-    private String orderWebsite;
+    @ApiModelProperty(value = "下单网站 0:Nike 1:Footlocker 2:Eastbay 3:Champs 4:Footaction 5:Kidsfootlocker 6:Footsites 7:Supreme 8:YeezySupply")
+    private Integer orderWebsite;
 
     @ApiModelProperty(value = "原价")
     private BigDecimal originalPrice;
@@ -60,7 +65,7 @@ public class MailOrder implements Serializable {
     @ApiModelProperty(value = "追踪邮箱")
     private String trackingEmail;
 
-    @ApiModelProperty(value = "服务类型 0:已下单 1:取消 2:已发货 3:派件中 4:派件延迟 5:已签收 6:召回")
+    @ApiModelProperty(value = "订单状态 0:已下单 1:取消 2:已发货 3:派件中 4:派件延迟 5:已签收 6:召回")
     private Integer orderState;
 
     @ApiModelProperty(value = "承运公司 0:待反馈 1:FedEx 2:UPS")

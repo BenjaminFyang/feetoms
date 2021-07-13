@@ -13,8 +13,8 @@ public enum TransitStatusEnum {
     TYPE2(2, "未确认"),
     TYPE3(3, "异常");
 
-    private final Integer code;
-    private final String message;
+    private Integer code;
+    private String message;
 
     TransitStatusEnum(Integer code, String message) {
         this.code = code;

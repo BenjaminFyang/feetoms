@@ -18,8 +18,8 @@ public enum WaybillStatusEnum {
     TYPE7(7, "Shipped"),
     TYPE8(8, "Shipment Delayed");
 
-    private final Integer code;
-    private final String message;
+    private Integer code;
+    private String message;
 
     WaybillStatusEnum(Integer code, String message) {
         this.code = code;

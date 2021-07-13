@@ -11,8 +11,8 @@ public enum IsLockedEnum {
     TYPE0(0, "未锁定"),
     TYPE1(1, "锁定");
 
-    private final Integer code;
-    private final String message;
+    private Integer code;
+    private String message;
 
     IsLockedEnum(Integer code, String message) {
         this.code = code;

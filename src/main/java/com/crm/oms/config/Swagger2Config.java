@@ -41,7 +41,7 @@ public class Swagger2Config {
                 .enable(flag)  // 配置是否开启swagger
                 .select()
                 //为当前包下controller生成API文档
-                .apis(RequestHandlerSelectors.basePackage("com.crm.feetoms.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.crm.oms.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 //添加登录认证

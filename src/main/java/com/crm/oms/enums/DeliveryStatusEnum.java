@@ -13,8 +13,8 @@ public enum DeliveryStatusEnum {
     TYPE3(3, "国外已结算"),
     TYPE4(4, "异常");
 
-    private final Integer code;
-    private final String message;
+    private Integer code;
+    private String message;
 
     DeliveryStatusEnum(Integer code, String message) {
         this.code = code;

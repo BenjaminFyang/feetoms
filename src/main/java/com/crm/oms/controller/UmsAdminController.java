@@ -41,15 +41,6 @@ public class UmsAdminController {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
-    @ApiOperation(value = "用户注册")
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public CommonResult<UmsAdmin> register(@RequestBody UmsAdmin umsAdminParam, BindingResult result) {
-        UmsAdmin umsAdmin = adminService.register(umsAdminParam);
-        if (umsAdmin == null) {
-            CommonResult.failed();
-        }
-        return CommonResult.success(umsAdmin);
-    }
 
     @ApiOperation(value = "登录以后返回token")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -65,6 +56,16 @@ public class UmsAdminController {
         return CommonResult.success(tokenMap);
     }
 
+
+    @ApiOperation(value = "用户注册")
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public CommonResult<UmsAdmin> register(@RequestBody UmsAdmin umsAdminParam, BindingResult result) {
+        UmsAdmin umsAdmin = adminService.register(umsAdminParam);
+        if (umsAdmin == null) {
+            CommonResult.failed();
+        }
+        return CommonResult.success(umsAdmin);
+    }
 
     @ApiOperation("修改指定用户密码")
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)

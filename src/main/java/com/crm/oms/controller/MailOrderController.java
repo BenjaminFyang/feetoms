@@ -43,11 +43,18 @@ public class MailOrderController {
                                                     @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
                                                     @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
 
-
         List<MailOrder> mailOrderList = mailOrderService.list(mailOrderParam, pageSize, pageNum);
         return CommonResult.success(CommonPage.restPage(mailOrderList));
+    }
+
+
+    @ApiOperation(value = "订单编辑列表")
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    public CommonResult<String> list(@Valid @RequestBody List<Long> mailOrderList) {
+        return CommonResult.success("订单编辑列表成功");
 
     }
+
 
 }
 

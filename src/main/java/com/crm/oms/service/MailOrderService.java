@@ -18,8 +18,14 @@ import java.util.List;
 public interface MailOrderService extends IService<MailOrder> {
 
 
-
-
+    /**
+     * 订单信息列表查询.
+     *
+     * @param mailOrderParam 查询参数.
+     * @param pageSize       行数
+     * @param pageNum        第几页
+     * @return the list of MailOrder
+     */
     List<MailOrder> list(MailOrderParam mailOrderParam, Integer pageSize, Integer pageNum);
 
 

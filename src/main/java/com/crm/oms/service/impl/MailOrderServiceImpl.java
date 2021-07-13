@@ -1,6 +1,8 @@
 package com.crm.oms.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.crm.oms.dto.MailOrderParam;
 import com.crm.oms.model.MailOrder;
 import com.crm.oms.mapper.MailOrderMapper;
@@ -30,11 +32,7 @@ public class MailOrderServiceImpl extends ServiceImpl<MailOrderMapper, MailOrder
 
     @Override
     public List<MailOrder> list(MailOrderParam mailOrderParam, Integer pageSize, Integer pageNum) {
-
         PageHelper.startPage(pageNum, pageSize);
-        QueryWrapper<MailOrder> userQueryWrapper = new QueryWrapper<>();
-        userQueryWrapper.like("sku", "k")
-                .between(Objects.nonNull(mailOrderParam.getStartOrderTime()) && Objects.nonNull(mailOrderParam.getEndOrderTime()), "create_time", mailOrderParam.getStartOrderTime(), mailOrderParam.getEndOrderTime());
-        return mailOrderMapper.selectList(userQueryWrapper);
+        return mailOrderMapper.selectList(mailOrderParam.list());
     }
 }

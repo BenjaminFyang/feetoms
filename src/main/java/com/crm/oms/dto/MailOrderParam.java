@@ -1,8 +1,10 @@
 package com.crm.oms.dto;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.crm.oms.common.validator.EnumValue;
 import com.crm.oms.enums.CarrierCompanyEnum;
 import com.crm.oms.enums.OrderWebsiteEnum;
+import com.crm.oms.model.MailOrder;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -10,6 +12,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Past;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * <p>
@@ -41,6 +44,9 @@ public class MailOrderParam implements Serializable {
     @ApiModelProperty(value = "下单网站 0:Nike 1:Footlocker 2:Eastbay 3:Champs 4:Footaction 5:Kidsfootlocker 6:Footsites 7:Supreme 8:YeezySupply")
     private Integer orderWebsite;
 
+    @ApiModelProperty(value = "国外运单号")
+    private String foreignWaybillNumber;
+
     @ApiModelProperty(value = "开始下单时间")
     private Date startOrderTime;
 
@@ -52,4 +58,22 @@ public class MailOrderParam implements Serializable {
 
     @ApiModelProperty(value = "结束发货时间")
     private Date endDeliveryTime;
+
+
+    /**
+     * 订单信息列表查询数据封装.
+     *
+     * @return the LambdaQueryWrapper
+     */
+    public LambdaQueryWrapper<MailOrder> list() {
+        LambdaQueryWrapper<MailOrder> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        return lambdaQueryWrapper.eq(Objects.nonNull(orderNumber), MailOrder::getOrderNumber, orderNumber)
+                .eq(Objects.nonNull(sku), MailOrder::getSku, sku)
+                .eq(Objects.nonNull(trackingEmail), MailOrder::getTrackingEmail, trackingEmail)
+                .eq(Objects.nonNull(orderState), MailOrder::getOrderState, orderState)
+                .eq(Objects.nonNull(orderWebsite), MailOrder::getOrderWebsite, orderWebsite)
+                .eq(Objects.nonNull(foreignWaybillNumber), MailOrder::getForeignWaybillNumber, foreignWaybillNumber)
+                .between(Objects.nonNull(startOrderTime) && Objects.nonNull(endOrderTime), MailOrder::getCreateTime, startOrderTime, endOrderTime)
+                .between(Objects.nonNull(startDeliveryTime) && Objects.nonNull(endDeliveryTime), MailOrder::getDeliveryTime, startDeliveryTime, endDeliveryTime);
+    }
 }

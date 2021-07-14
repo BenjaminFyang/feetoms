@@ -38,9 +38,10 @@ public class MailOrderController {
 
     @Resource
     private MailOrderService mailOrderService;
+
     public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd(HH-mm-ss)");
 
-    @ApiOperation(value = "订单信息列表")
+    @ApiOperation(value = "1、订单信息列表")
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public CommonResult<CommonPage<MailOrder>> list(@Valid @RequestBody MailOrderParam mailOrderParam,
                                                     @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
@@ -51,7 +52,7 @@ public class MailOrderController {
     }
 
 
-    @ApiOperation(value = "订单导出")
+    @ApiOperation(value = "2、订单导出")
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public CommonResult<String> export(HttpServletResponse response) throws IOException {
 
@@ -72,36 +73,35 @@ public class MailOrderController {
         // 保证下载到本地文件名不乱码的
         String fileName = URLEncoder.encode("订单明细表" + FORMATTER.format(new Date()), "UTF-8");
         response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+
         // List<模型> 的数据体，替换成自己的业务代码即可
         EasyExcel.write(response.getOutputStream(), ExportMailOrder.class).sheet("sheet").doWrite(exportMailOrderList);
-
-        return CommonResult.success("");
+        return CommonResult.success("订单导出成功");
     }
 
 
-    @ApiOperation(value = "订单编辑")
+    @ApiOperation(value = "3、订单编辑")
     @RequestMapping(value = "/editMailOrder", method = RequestMethod.POST)
     public CommonResult<String> editMailOrder(@Valid @RequestBody MailOrderEditParam mailOrderEditParam) {
-
         mailOrderService.editMailOrder(mailOrderEditParam);
         return CommonResult.success("订单编辑列表成功");
     }
 
-    @ApiOperation(value = "订单锁定")
+    @ApiOperation(value = "4、订单锁定")
     @RequestMapping(value = "/lockingMailOrder/{mailOrderId}", method = RequestMethod.GET)
     public CommonResult<String> lockingMailOrder(@PathVariable Long mailOrderId) {
         mailOrderService.lockingMailOrder(mailOrderId);
         return CommonResult.success("订单锁定成功");
     }
 
-    @ApiOperation(value = "订单锁定解除")
+    @ApiOperation(value = "5、订单锁定解除")
     @RequestMapping(value = "/relieveMailOrder/{mailOrderId}", method = RequestMethod.POST)
     public CommonResult<String> relieveMailOrder(@PathVariable Long mailOrderId) {
         mailOrderService.relieveMailOrder(mailOrderId);
         return CommonResult.success("订单锁定成功");
     }
 
-    @ApiOperation(value = "订单删除")
+    @ApiOperation(value = "6、订单删除")
     @RequestMapping(value = "/deleteMailOrder/{mailOrderId}", method = RequestMethod.POST)
     public CommonResult<String> deleteMailOrder(@PathVariable Long mailOrderId) {
         mailOrderService.deleteMailOrder(mailOrderId);

@@ -2,9 +2,15 @@ package com.crm.oms.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
+
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
+
+import com.crm.oms.dto.MailManagementParam;
+import com.crm.oms.enums.PassNotEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,10 +27,10 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("mail_management")
-@ApiModel(value="MailManagement对象", description="账号管理同步表")
+@ApiModel(value = "MailManagement对象", description = "账号管理同步表")
 public class MailManagement implements Serializable {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "主键id")
     @TableId(value = "id", type = IdType.AUTO)
@@ -52,4 +58,13 @@ public class MailManagement implements Serializable {
     private Date updateTime;
 
 
+    public MailManagement(MailManagementParam mailManagementParam) {
+        this.mailType = mailManagementParam.getMailType();
+        this.serviceType = mailManagementParam.getServiceType();
+        this.email = mailManagementParam.getEmail();
+        this.authorizationCode = mailManagementParam.getAuthorizationCode();
+        this.passNot = PassNotEnum.TYPE0.getCode();
+        this.createTime = new Date();
+        this.updateTime = new Date();
+    }
 }

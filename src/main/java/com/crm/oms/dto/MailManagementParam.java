@@ -33,7 +33,7 @@ public class MailManagementParam implements Serializable {
     private String email;
 
     @ApiModelProperty(value = "授权码")
-    @Size(min = 3, max = 16, message = "输入授权码应该在3到16位之间")
+    @Size(min = 1, max = 16, message = "输入授权码应该为1到16位")
     private String authorizationCode;
 
 }

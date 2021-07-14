@@ -31,8 +31,6 @@ import java.util.Map;
 @RequestMapping("/admin")
 public class UmsAdminController {
 
-    private Logger LOGGER = LoggerFactory.getLogger(UmsAdminController.class);
-
     @Resource
     private UmsAdminService adminService;
 
@@ -61,20 +59,19 @@ public class UmsAdminController {
     @RequestMapping(value = "/permission/{adminId}", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult<List<UmsPermission>> getPermissionList(@PathVariable Long adminId) {
-        LOGGER.info("获取用户所有权限（包括+-权限)");
         List<UmsPermission> permissionList = adminService.getPermissionList(adminId);
         return CommonResult.success(permissionList);
     }
 
 
-    @ApiOperation(value = "账户注册")
+    @ApiOperation(value = "添加用户")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public CommonResult<String> register(@Validated @RequestBody AddUmsAdmin addUmsAdmin) {
         adminService.register(addUmsAdmin);
-        return CommonResult.success("账户注册成功");
+        return CommonResult.success("添加用户成功");
     }
 
-    @ApiOperation("修改用户密码")
+    @ApiOperation("修改用户信息")
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
     public CommonResult<String> updatePassword(@Validated @RequestBody UpdateUmsAdminParam updatePasswordParam) {
         adminService.updatePassword(updatePasswordParam);

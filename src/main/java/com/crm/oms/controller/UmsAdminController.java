@@ -1,22 +1,25 @@
 package com.crm.oms.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.crm.oms.common.api.CommonPage;
 import com.crm.oms.common.api.CommonResult;
 import com.crm.oms.dto.AddUmsAdmin;
+import com.crm.oms.dto.MailOrderParam;
 import com.crm.oms.dto.UmsAdminLoginParam;
-import com.crm.oms.dto.UpdateAdminPasswordParam;
 import com.crm.oms.dto.UpdateUmsAdminParam;
+import com.crm.oms.model.MailOrder;
 import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.model.UmsPermission;
 import com.crm.oms.service.UmsAdminService;
+import com.github.pagehelper.PageHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,14 +58,28 @@ public class UmsAdminController {
         return CommonResult.success(tokenMap);
     }
 
-    @ApiOperation("获取用户所有权限（包括+-权限）")
+    @ApiOperation("获取用户所有权限（包括+权限）")
     @RequestMapping(value = "/permission/{adminId}", method = RequestMethod.GET)
-    @ResponseBody
     public CommonResult<List<UmsPermission>> getPermissionList(@PathVariable Long adminId) {
         List<UmsPermission> permissionList = adminService.getPermissionList(adminId);
         return CommonResult.success(permissionList);
     }
 
+    @ApiOperation("修改个人用户信息")
+    @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
+    public CommonResult<String> updatePassword(@Validated @RequestBody UpdateUmsAdminParam updatePasswordParam) {
+        adminService.updatePassword(updatePasswordParam);
+        return CommonResult.success("修改用户密码成功");
+    }
+
+
+    @ApiOperation(value = "账户管理列表")
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    public CommonResult<CommonPage<UmsAdmin>> list(@RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize, @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<UmsAdmin> umsAdminList = adminService.list();
+        return CommonResult.success(CommonPage.restPage(umsAdminList));
+    }
 
     @ApiOperation(value = "添加用户")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -71,12 +88,11 @@ public class UmsAdminController {
         return CommonResult.success("添加用户成功");
     }
 
-    @ApiOperation("修改用户信息")
-    @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
-    public CommonResult<String> updatePassword(@Validated @RequestBody UpdateUmsAdminParam updatePasswordParam) {
-        adminService.updatePassword(updatePasswordParam);
-        return CommonResult.success("修改用户密码成功");
+    @ApiOperation(value = "删除用户")
+    @RequestMapping(value = "/delete/{adminId}", method = RequestMethod.GET)
+    public CommonResult<String> delete(@PathVariable Long adminId) {
+        adminService.delete(adminId);
+        return CommonResult.success("删除用户成功");
     }
-
 
 }

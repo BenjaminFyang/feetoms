@@ -126,4 +126,12 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
         return adminMapper.getPermissionList(adminId);
     }
 
+    @Override
+    public void delete(Long adminId) {
+        int result = adminMapper.deleteById(adminId);
+        if (result <= 0) {
+            throw new ApiException("删除用户id不存在");
+        }
+    }
+
 }

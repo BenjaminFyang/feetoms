@@ -1,9 +1,11 @@
 package com.crm.oms.service;
 
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.crm.oms.dto.AddUmsAdmin;
 import com.crm.oms.dto.UpdateAdminPasswordParam;
 import com.crm.oms.dto.UpdateUmsAdminParam;
+import com.crm.oms.model.MailOrder;
 import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.model.UmsPermission;
 
@@ -13,7 +15,7 @@ import java.util.List;
  * 后台管理员Service
  * Created by macro on 2018/4/26.
  */
-public interface UmsAdminService {
+public interface UmsAdminService extends IService<UmsAdmin> {
     /**
      * 根据用户名获取后台管理员
      */
@@ -44,6 +46,9 @@ public interface UmsAdminService {
      * 获取用户所有权限（包括角色权限和+-权限）
      */
     List<UmsPermission> getPermissionList(Long adminId);
+
+
+    void delete(Long adminId);
 
 
 }

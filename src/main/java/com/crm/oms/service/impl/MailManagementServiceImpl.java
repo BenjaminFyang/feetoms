@@ -73,10 +73,11 @@ public class MailManagementServiceImpl extends ServiceImpl<MailManagementMapper,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(Long mailManagementId) {
-        int result = mailManagementMapper.deleteById(mailManagementId);
+    public void delete(List<Long> mailManagementIdList) {
+
+        int result = mailManagementMapper.deleteBatchIds(mailManagementIdList);
         if (result < 0) {
-            log.error("MailManagementServiceImpl账号管理失败mailOrderId={}", mailManagementId);
+            log.error("MailManagementServiceImpl账号管理失败mailManagementIdList={}", mailManagementIdList);
             throw new ApiException("账号同步删除失败");
         }
 

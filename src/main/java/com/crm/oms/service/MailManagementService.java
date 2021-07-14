@@ -23,7 +23,7 @@ public interface MailManagementService extends IService<MailManagement> {
 
     void edit(MailManagementEditParam mailManagementEditParam);
 
-    void delete(Long mailManagementId);
+    void delete(List<Long> mailManagementIdList);
 
     void isPass(Long mailManagementId);
 

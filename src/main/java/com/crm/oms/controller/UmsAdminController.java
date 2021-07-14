@@ -55,7 +55,6 @@ public class UmsAdminController {
         return CommonResult.success(tokenMap);
     }
 
-
     @ApiOperation(value = "用户注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public CommonResult<UmsAdmin> register(@Validated @RequestBody UmsAdmin umsAdminParam) {

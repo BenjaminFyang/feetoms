@@ -53,14 +53,14 @@ public class MailManagementController {
     }
 
     @ApiOperation(value = "4、账号同步删除")
-    @RequestMapping(value = "/delete/{mailManagementId}", method = RequestMethod.POST)
-    public CommonResult<String> delete(@PathVariable Long mailManagementId) {
-        mailManagementService.delete(mailManagementId);
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public CommonResult<String> delete(@Valid @RequestBody List<Long> mailManagementIdList) {
+        mailManagementService.delete(mailManagementIdList);
         return CommonResult.success("账号同步删除成功");
     }
 
 
-    @ApiOperation(value = "5、账号同步删除")
+    @ApiOperation(value = "5、账号测试是否通过")
     @RequestMapping(value = "/isPass/{mailManagementId}", method = RequestMethod.POST)
     public CommonResult<String> isPass(@PathVariable Long mailManagementId) {
         mailManagementService.isPass(mailManagementId);

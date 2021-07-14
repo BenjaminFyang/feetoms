@@ -51,7 +51,6 @@ public class MailOrderController {
         return CommonResult.success(CommonPage.restPage(mailOrderList));
     }
 
-
     @ApiOperation(value = "2、订单导出")
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public CommonResult<String> export(HttpServletResponse response) throws IOException {
@@ -78,7 +77,6 @@ public class MailOrderController {
         EasyExcel.write(response.getOutputStream(), ExportMailOrder.class).sheet("sheet").doWrite(exportMailOrderList);
         return CommonResult.success("订单导出成功");
     }
-
 
     @ApiOperation(value = "3、订单编辑")
     @RequestMapping(value = "/editMailOrder", method = RequestMethod.POST)

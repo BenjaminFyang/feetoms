@@ -3,6 +3,8 @@ package com.crm.oms.enums;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+
 import static java.util.Arrays.stream;
 
 @Getter
@@ -29,5 +31,9 @@ public enum CarrierCompanyEnum {
      */
     public static boolean isValidEnum(Integer code) {
         return stream(values()).anyMatch(carrierCompanyEnum -> carrierCompanyEnum.code.equals(code));
+    }
+
+    public static CarrierCompanyEnum of(Integer code) {
+        return Arrays.stream(values()).filter(anEnum -> anEnum.getCode().equals(code)).findFirst().orElse(null);
     }
 }

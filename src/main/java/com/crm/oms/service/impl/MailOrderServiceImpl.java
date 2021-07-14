@@ -43,6 +43,11 @@ public class MailOrderServiceImpl extends ServiceImpl<MailOrderMapper, MailOrder
     }
 
     @Override
+    public List<MailOrder> export(MailOrderParam mailOrderParam) {
+        return mailOrderMapper.selectList(mailOrderParam.list());
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void editMailOrder(MailOrderEditParam mailOrderEditParam) {
         LambdaUpdateChainWrapper<MailOrder> lambdaUpdateChainWrapper = new LambdaUpdateChainWrapper<>(mailOrderMapper);

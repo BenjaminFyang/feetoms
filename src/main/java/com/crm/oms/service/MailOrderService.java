@@ -29,6 +29,8 @@ public interface MailOrderService extends IService<MailOrder> {
      */
     List<MailOrder> list(MailOrderParam mailOrderParam, Integer pageSize, Integer pageNum);
 
+    List<MailOrder> export(MailOrderParam mailOrderParam);
+
 
     /**
      * 批量修改对选中的订单同步修改

@@ -2,6 +2,8 @@ package com.crm.oms.enums;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+
 import static java.util.Arrays.stream;
 
 /**
@@ -38,5 +40,9 @@ public enum OrderStatusEnum {
      */
     public static boolean isValidEnum(Integer code) {
         return stream(values()).anyMatch(orderStatusEnum -> orderStatusEnum.code.equals(code));
+    }
+
+    public static OrderStatusEnum of(Integer code) {
+        return Arrays.stream(values()).filter(anEnum -> anEnum.getCode().equals(code)).findFirst().orElse(null);
     }
 }

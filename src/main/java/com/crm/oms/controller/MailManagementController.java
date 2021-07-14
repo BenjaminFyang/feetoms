@@ -43,7 +43,7 @@ public class MailManagementController {
         mailManagementService.insert(mailManagementParam);
         return CommonResult.success("账号同步新增成功");
     }
-    
+
     @ApiOperation(value = "3、账号同步编辑")
     @RequestMapping(value = "/edit/{mailManagementId}", method = RequestMethod.POST)
     public CommonResult<String> edit(@Valid @RequestBody MailManagementEditParam mailManagementEditParam) {

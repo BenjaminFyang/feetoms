@@ -1,6 +1,7 @@
 package com.crm.oms.dto;
 
 import com.crm.oms.model.UmsAdmin;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,6 +12,7 @@ import java.util.Collection;
  */
 public class AdminUserDetails implements UserDetails {
 
+    @Getter
     private UmsAdmin umsAdmin;
 
     public AdminUserDetails(UmsAdmin umsAdmin) {

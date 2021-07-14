@@ -1,6 +1,7 @@
 package com.crm.oms.component;
 
 import com.crm.oms.common.utils.JwtTokenUtil;
+import com.crm.oms.common.utils.TransmittableThreadLocalContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Resource
     private UserDetailsService userDetailsService;
+
 
     @Resource
     private JwtTokenUtil jwtTokenUtil;

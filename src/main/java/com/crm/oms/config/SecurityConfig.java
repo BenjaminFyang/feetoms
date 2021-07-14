@@ -1,6 +1,7 @@
 package com.crm.oms.config;
 
 
+import com.crm.oms.common.utils.TransmittableThreadLocalContext;
 import com.crm.oms.component.JwtAuthenticationTokenFilter;
 import com.crm.oms.component.RestAuthenticationEntryPoint;
 import com.crm.oms.component.RestfulAccessDeniedHandler;
@@ -111,6 +112,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return username -> {
             UmsAdmin admin = adminService.getAdminByUsername(username);
             if (admin != null) {
+                TransmittableThreadLocalContext.setAuthData(admin);
                 return new AdminUserDetails(admin);
             }
             throw new UsernameNotFoundException("用户名或密码错误");

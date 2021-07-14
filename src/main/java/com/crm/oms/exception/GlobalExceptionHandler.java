@@ -25,6 +25,13 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseBody
+    @ExceptionHandler(value = Exception.class)
+    public CommonResult<String> handle() {
+        return CommonResult.failed("服务器出现异常");
+    }
+
+
+    @ResponseBody
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public CommonResult<String> handleValidException(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();

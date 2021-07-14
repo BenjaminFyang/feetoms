@@ -1,13 +1,11 @@
 package com.crm.oms.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.crm.oms.common.api.CommonPage;
 import com.crm.oms.common.api.CommonResult;
+import com.crm.oms.common.utils.TransmittableThreadLocalContext;
 import com.crm.oms.dto.AddUmsAdmin;
-import com.crm.oms.dto.MailOrderParam;
 import com.crm.oms.dto.UmsAdminLoginParam;
 import com.crm.oms.dto.UpdateUmsAdminParam;
-import com.crm.oms.model.MailOrder;
 import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.model.UmsPermission;
 import com.crm.oms.service.UmsAdminService;
@@ -19,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,9 +56,10 @@ public class UmsAdminController {
     }
 
     @ApiOperation("获取用户所有权限（包括+权限）")
-    @RequestMapping(value = "/permission/{adminId}", method = RequestMethod.GET)
-    public CommonResult<List<UmsPermission>> getPermissionList(@PathVariable Long adminId) {
-        List<UmsPermission> permissionList = adminService.getPermissionList(adminId);
+    @RequestMapping(value = "/permission", method = RequestMethod.GET)
+    public CommonResult<List<UmsPermission>> getPermissionList() {
+        UmsAdmin umsAdmin = TransmittableThreadLocalContext.getAuthDataBo();
+        List<UmsPermission> permissionList = adminService.getPermissionList(umsAdmin.getId());
         return CommonResult.success(permissionList);
     }
 

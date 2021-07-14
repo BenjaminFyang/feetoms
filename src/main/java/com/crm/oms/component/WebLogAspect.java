@@ -3,6 +3,7 @@ package com.crm.oms.component;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONUtil;
+import com.crm.oms.common.utils.TransmittableThreadLocalContext;
 import com.crm.oms.dto.WebLog;
 import io.swagger.annotations.ApiOperation;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -70,6 +71,8 @@ public class WebLogAspect {
         webLog.setUri(request.getRequestURI());
         webLog.setUrl(request.getRequestURL().toString());
         LOGGER.info("{}", JSONUtil.parse(webLog));
+
+        TransmittableThreadLocalContext.remove();
         return result;
     }
 

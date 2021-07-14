@@ -1,6 +1,7 @@
 package com.crm.oms.service;
 
 
+import com.crm.oms.dto.AddUmsAdmin;
 import com.crm.oms.dto.UpdateAdminPasswordParam;
 import com.crm.oms.dto.UpdateUmsAdminParam;
 import com.crm.oms.model.UmsAdmin;
@@ -21,7 +22,7 @@ public interface UmsAdminService {
     /**
      * 注册功能
      */
-    UmsAdmin register(UmsAdmin umsAdminParam);
+    void register(AddUmsAdmin addUmsAdmin);
 
     /**
      * 登录功能
@@ -36,7 +37,7 @@ public interface UmsAdminService {
     /**
      * 修改密码
      */
-    int updatePassword(UpdateUmsAdminParam updateUmsAdminParam);
+    void updatePassword(UpdateUmsAdminParam updateUmsAdminParam);
 
 
     /**

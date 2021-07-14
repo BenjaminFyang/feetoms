@@ -2,11 +2,16 @@ package com.crm.oms.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.crm.oms.common.utils.JwtTokenUtil;
 
+import com.crm.oms.dto.AddUmsAdmin;
 import com.crm.oms.dto.UpdateAdminPasswordParam;
 import com.crm.oms.dto.UpdateUmsAdminParam;
+import com.crm.oms.exception.ApiException;
+import com.crm.oms.mapper.MailOrderRecordMapper;
 import com.crm.oms.mapper.UmsAdminMapper;
+import com.crm.oms.model.MailOrderRecord;
 import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.model.UmsAdminExample;
 import com.crm.oms.model.UmsPermission;
@@ -32,7 +37,7 @@ import java.util.List;
  * UmsAdminService实现类
  */
 @Service
-public class UmsAdminServiceImpl implements UmsAdminService {
+public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> implements UmsAdminService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsAdminServiceImpl.class);
 
     @Resource
@@ -59,25 +64,23 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     }
 
     @Override
-    public UmsAdmin register(UmsAdmin umsAdminParam) {
+    public void register(AddUmsAdmin addUmsAdmin) {
         UmsAdmin umsAdmin = new UmsAdmin();
-        BeanUtils.copyProperties(umsAdminParam, umsAdmin);
+        BeanUtils.copyProperties(addUmsAdmin, umsAdmin);
         umsAdmin.setCreateTime(new Date());
         umsAdmin.setUpdateTime(new Date());
-        umsAdmin.setDueDate(new Date());
         umsAdmin.setStatus(1);
         //查询是否有相同用户名的用户
         UmsAdminExample example = new UmsAdminExample();
         example.createCriteria().andUsernameEqualTo(umsAdmin.getUsername());
         List<UmsAdmin> umsAdminList = adminMapper.selectByExample(example);
         if (umsAdminList.size() > 0) {
-            return null;
+            throw new ApiException("改姓名已经注册过了");
         }
         //将密码进行加密操作
         String encodePassword = passwordEncoder.encode(umsAdmin.getPassword());
         umsAdmin.setPassword(encodePassword);
         adminMapper.insert(umsAdmin);
-        return umsAdmin;
     }
 
     @Override
@@ -99,19 +102,22 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
 
     @Override
-    public int updatePassword(UpdateUmsAdminParam updateUmsAdminParam) {
+    public void updatePassword(UpdateUmsAdminParam updateUmsAdminParam) {
 
         UmsAdminExample example = new UmsAdminExample();
         example.createCriteria().andIdEqualTo(updateUmsAdminParam.getId());
         List<UmsAdmin> adminList = adminMapper.selectByExample(example);
         if (CollUtil.isEmpty(adminList)) {
-            return -2;
+            throw new ApiException("找不到该用户");
         }
         UmsAdmin umsAdmin = adminList.get(0);
         umsAdmin.setPassword(passwordEncoder.encode(updateUmsAdminParam.getPassword()));
         umsAdmin.setNickName(updateUmsAdminParam.getNickName());
-        adminMapper.updateByPrimaryKey(umsAdmin);
-        return 1;
+        int result = adminMapper.updateByPrimaryKey(umsAdmin);
+        if (result <= 0) {
+            throw new ApiException("修改昵称账号密码不正确");
+        }
+
     }
 
 

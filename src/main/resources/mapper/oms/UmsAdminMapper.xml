@@ -122,18 +122,18 @@
             <include refid="Example_Where_Clause"/>
         </if>
     </delete>
-    <insert id="insert" parameterType="com.crm.oms.model.UmsAdmin">
-        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
-        insert into ums_admin (username, password, icon,
-        email, nick_name, note,
-        create_time, update_time,due_date,login_time, status,number_mailbox,due_date)
-        values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},
-        #{email,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR},
-        #{createTime,jdbcType=TIMESTAMP},#{updateTime},#{dueDate}, #{loginTime,jdbcType=TIMESTAMP},
-        #{status,jdbcType=INTEGER}),#{numberMailbox,jdbcType=INTEGER}, #{dueDate,jdbcType=TIMESTAMP})
-    </insert>
+<!--    <insert id="insert" parameterType="com.crm.oms.model.UmsAdmin">-->
+<!--        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">-->
+<!--            SELECT LAST_INSERT_ID()-->
+<!--        </selectKey>-->
+<!--        insert into ums_admin (username, password, icon,-->
+<!--        email, nick_name, note,-->
+<!--        create_time, update_time,due_date,login_time, status,number_mailbox,due_date)-->
+<!--        values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR},-->
+<!--        #{email,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR},-->
+<!--        #{createTime,jdbcType=TIMESTAMP},#{updateTime},#{dueDate}, #{loginTime,jdbcType=TIMESTAMP},-->
+<!--        #{status,jdbcType=INTEGER}),#{numberMailbox,jdbcType=INTEGER}, #{dueDate,jdbcType=TIMESTAMP})-->
+<!--    </insert>-->
     <insert id="insertSelective" parameterType="com.crm.oms.model.UmsAdmin">
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
             SELECT LAST_INSERT_ID()

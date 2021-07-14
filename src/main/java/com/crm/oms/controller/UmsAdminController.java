@@ -1,6 +1,7 @@
 package com.crm.oms.controller;
 
 import com.crm.oms.common.api.CommonResult;
+import com.crm.oms.dto.AddUmsAdmin;
 import com.crm.oms.dto.UmsAdminLoginParam;
 import com.crm.oms.dto.UpdateAdminPasswordParam;
 import com.crm.oms.dto.UpdateUmsAdminParam;
@@ -66,29 +67,18 @@ public class UmsAdminController {
     }
 
 
-    @ApiOperation(value = "用户注册")
+    @ApiOperation(value = "账户注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public CommonResult<UmsAdmin> register(@Validated @RequestBody UmsAdmin umsAdminParam) {
-        UmsAdmin umsAdmin = adminService.register(umsAdminParam);
-        if (umsAdmin == null) {
-            CommonResult.failed();
-        }
-        return CommonResult.success(umsAdmin);
+    public CommonResult<String> register(@Validated @RequestBody AddUmsAdmin addUmsAdmin) {
+        adminService.register(addUmsAdmin);
+        return CommonResult.success("账户注册成功");
     }
 
-    @ApiOperation("修改指定用户密码")
+    @ApiOperation("修改用户密码")
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
     public CommonResult<String> updatePassword(@Validated @RequestBody UpdateUmsAdminParam updatePasswordParam) {
-        int status = adminService.updatePassword(updatePasswordParam);
-        if (status > 0) {
-            return CommonResult.success("修改密码成功");
-        } else if (status == -1) {
-            return CommonResult.failed("提交参数不合法");
-        } else if (status == -2) {
-            return CommonResult.failed("找不到该用户");
-        } else {
-            return CommonResult.failed();
-        }
+        adminService.updatePassword(updatePasswordParam);
+        return CommonResult.success("修改用户密码成功");
     }
 
 

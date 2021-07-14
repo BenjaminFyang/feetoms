@@ -1,5 +1,7 @@
 package com.crm.oms.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.crm.oms.model.MailOrderRecord;
 import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.model.UmsAdminExample;
 import com.crm.oms.model.UmsPermission;
@@ -8,14 +10,14 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-public interface UmsAdminMapper {
+public interface UmsAdminMapper extends BaseMapper<UmsAdmin> {
     int countByExample(UmsAdminExample example);
 
     int deleteByExample(UmsAdminExample example);
 
     int deleteByPrimaryKey(Long id);
 
-    int insert(UmsAdmin record);
+//    int insert(UmsAdmin record);
 
     int insertSelective(UmsAdmin record);
 

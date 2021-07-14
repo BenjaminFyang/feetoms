@@ -12,24 +12,28 @@ public class UmsAdmin implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // 需要生成对应的toString的方法.
     private Long id;
 
     private String username;
 
+    @ApiModelProperty(value = "昵称")
+    private String nickName;
+
+    @ApiModelProperty(value = "账号邮箱")
+    private String email;
+
     private String password;
+
+    private Integer role;
 
     @ApiModelProperty(value = "头像")
     private String icon;
 
-    @ApiModelProperty(value = "邮箱")
-    private String email;
-
-    @ApiModelProperty(value = "昵称")
-    private String nickName;
-
     @ApiModelProperty(value = "备注信息")
     private String note;
+
+    @ApiModelProperty(value = "邮箱个数上限")
+    private Integer numberMailbox;
 
     @ApiModelProperty(value = "创建时间")
     private Date createTime;

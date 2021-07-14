@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.crm.oms.common.utils.JwtTokenUtil;
 
 import com.crm.oms.dto.UpdateAdminPasswordParam;
+import com.crm.oms.dto.UpdateUmsAdminParam;
 import com.crm.oms.mapper.UmsAdminMapper;
 import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.model.UmsAdminExample;
@@ -42,9 +43,6 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
     @Resource
     private PasswordEncoder passwordEncoder;
-
-    @Value("${jwt.tokenHead}")
-    private String tokenHead;
 
     @Resource
     private UmsAdminMapper adminMapper;
@@ -101,20 +99,17 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
 
     @Override
-    public int updatePassword(UpdateAdminPasswordParam param) {
-        if (StrUtil.isEmpty(param.getUsername())
-                || StrUtil.isEmpty(param.getOldPassword())
-                || StrUtil.isEmpty(param.getNewPassword())) {
-            return -1;
-        }
+    public int updatePassword(UpdateUmsAdminParam updateUmsAdminParam) {
+
         UmsAdminExample example = new UmsAdminExample();
-        example.createCriteria().andUsernameEqualTo(param.getUsername());
+        example.createCriteria().andIdEqualTo(updateUmsAdminParam.getId());
         List<UmsAdmin> adminList = adminMapper.selectByExample(example);
         if (CollUtil.isEmpty(adminList)) {
             return -2;
         }
         UmsAdmin umsAdmin = adminList.get(0);
-        umsAdmin.setPassword(passwordEncoder.encode(param.getNewPassword()));
+        umsAdmin.setPassword(passwordEncoder.encode(updateUmsAdminParam.getPassword()));
+        umsAdmin.setNickName(updateUmsAdminParam.getNickName());
         adminMapper.updateByPrimaryKey(umsAdmin);
         return 1;
     }

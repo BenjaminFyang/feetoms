@@ -3,6 +3,7 @@ package com.crm.oms.controller;
 import com.crm.oms.common.api.CommonResult;
 import com.crm.oms.dto.UmsAdminLoginParam;
 import com.crm.oms.dto.UpdateAdminPasswordParam;
+import com.crm.oms.dto.UpdateUmsAdminParam;
 import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.model.UmsPermission;
 import com.crm.oms.service.UmsAdminService;
@@ -55,6 +56,16 @@ public class UmsAdminController {
         return CommonResult.success(tokenMap);
     }
 
+    @ApiOperation("获取用户所有权限（包括+-权限）")
+    @RequestMapping(value = "/permission/{adminId}", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<List<UmsPermission>> getPermissionList(@PathVariable Long adminId) {
+        LOGGER.info("获取用户所有权限（包括+-权限)");
+        List<UmsPermission> permissionList = adminService.getPermissionList(adminId);
+        return CommonResult.success(permissionList);
+    }
+
+
     @ApiOperation(value = "用户注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public CommonResult<UmsAdmin> register(@Validated @RequestBody UmsAdmin umsAdminParam) {
@@ -67,7 +78,7 @@ public class UmsAdminController {
 
     @ApiOperation("修改指定用户密码")
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
-    public CommonResult<String> updatePassword(@Validated @RequestBody UpdateAdminPasswordParam updatePasswordParam) {
+    public CommonResult<String> updatePassword(@Validated @RequestBody UpdateUmsAdminParam updatePasswordParam) {
         int status = adminService.updatePassword(updatePasswordParam);
         if (status > 0) {
             return CommonResult.success("修改密码成功");
@@ -78,16 +89,6 @@ public class UmsAdminController {
         } else {
             return CommonResult.failed();
         }
-    }
-
-
-    @ApiOperation("获取用户所有权限（包括+-权限）")
-    @RequestMapping(value = "/permission/{adminId}", method = RequestMethod.GET)
-    @ResponseBody
-    public CommonResult<List<UmsPermission>> getPermissionList(@PathVariable Long adminId) {
-        LOGGER.info("获取用户所有权限（包括+-权限)");
-        List<UmsPermission> permissionList = adminService.getPermissionList(adminId);
-        return CommonResult.success(permissionList);
     }
 
 

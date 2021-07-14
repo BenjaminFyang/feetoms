@@ -1,5 +1,6 @@
 package com.crm.oms.service;
 
+import com.crm.oms.dto.MailOrderEditParam;
 import com.crm.oms.dto.MailOrderParam;
 import com.crm.oms.model.MailOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -29,4 +30,31 @@ public interface MailOrderService extends IService<MailOrder> {
     List<MailOrder> list(MailOrderParam mailOrderParam, Integer pageSize, Integer pageNum);
 
 
+    /**
+     * 批量修改对选中的订单同步修改
+     *
+     * @param mailOrderEditParam 传参数
+     */
+    void editMailOrder(MailOrderEditParam mailOrderEditParam);
+
+    /**
+     * 锁定订单
+     *
+     * @param mailOrderId 主键的id
+     */
+    void lockingMailOrder(Long mailOrderId);
+
+    /**
+     * 解除锁定
+     *
+     * @param mailOrderId 主键的id
+     */
+    void relieveMailOrder(Long mailOrderId);
+
+    /**
+     * 删除订单
+     *
+     * @param mailOrderId 订单主键的id
+     */
+    void deleteMailOrder(Long mailOrderId);
 }

@@ -3,6 +3,7 @@ package com.crm.oms.controller;
 
 import com.crm.oms.common.api.CommonPage;
 import com.crm.oms.common.api.CommonResult;
+import com.crm.oms.dto.MailOrderEditParam;
 import com.crm.oms.dto.MailOrderParam;
 import com.crm.oms.enums.OrderStatusEnum;
 import com.crm.oms.model.MailOrder;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,12 +33,8 @@ import java.util.List;
 @RequestMapping("/mailOrder")
 public class MailOrderController {
 
-    private Logger LOGGER = LoggerFactory.getLogger(MailOrderController.class);
-
-
     @Resource
     private MailOrderService mailOrderService;
-
 
     @ApiOperation(value = "订单信息列表")
     @RequestMapping(value = "/list", method = RequestMethod.POST)
@@ -47,12 +46,33 @@ public class MailOrderController {
         return CommonResult.success(CommonPage.restPage(mailOrderList));
     }
 
+    @ApiOperation(value = "订单编辑")
+    @RequestMapping(value = "/editMailOrder", method = RequestMethod.POST)
+    public CommonResult<String> editMailOrder(@Valid @RequestBody MailOrderEditParam mailOrderEditParam) {
 
-    @ApiOperation(value = "订单编辑列表")
-    @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public CommonResult<String> list(@Valid @RequestBody List<Long> mailOrderList) {
+        mailOrderService.editMailOrder(mailOrderEditParam);
         return CommonResult.success("订单编辑列表成功");
+    }
 
+    @ApiOperation(value = "订单锁定")
+    @RequestMapping(value = "/lockingMailOrder/{mailOrderId}", method = RequestMethod.GET)
+    public CommonResult<String> lockingMailOrder(@PathVariable Long mailOrderId) {
+        mailOrderService.lockingMailOrder(mailOrderId);
+        return CommonResult.success("订单锁定成功");
+    }
+
+    @ApiOperation(value = "订单锁定解除")
+    @RequestMapping(value = "/relieveMailOrder/{mailOrderId}", method = RequestMethod.POST)
+    public CommonResult<String> relieveMailOrder(@PathVariable Long mailOrderId) {
+        mailOrderService.relieveMailOrder(mailOrderId);
+        return CommonResult.success("订单锁定成功");
+    }
+
+    @ApiOperation(value = "订单删除")
+    @RequestMapping(value = "/deleteMailOrder/{mailOrderId}", method = RequestMethod.POST)
+    public CommonResult<String> deleteMailOrder(@PathVariable Long mailOrderId) {
+        mailOrderService.deleteMailOrder(mailOrderId);
+        return CommonResult.success("订单锁定成功");
     }
 
 

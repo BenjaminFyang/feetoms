@@ -3,18 +3,15 @@ package com.crm.oms.controller;
 
 import com.crm.oms.common.api.CommonPage;
 import com.crm.oms.common.api.CommonResult;
-import com.crm.oms.dto.MailOrderParam;
-import com.crm.oms.model.MailOrder;
 import com.crm.oms.model.MailOrderRecord;
 import com.crm.oms.service.MailOrderRecordService;
-import com.crm.oms.service.MailOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**

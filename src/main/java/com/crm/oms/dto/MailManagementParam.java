@@ -3,6 +3,9 @@ package com.crm.oms.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -25,9 +28,12 @@ public class MailManagementParam implements Serializable {
     private Integer serviceType;
 
     @ApiModelProperty(value = "邮箱")
+    @Email(message = "邮件格式不正确")
+    @NotEmpty(message = "账号邮箱不能为空")
     private String email;
 
     @ApiModelProperty(value = "授权码")
+    @Size(min = 3, max = 16, message = "输入授权码应该在3到16位之间")
     private String authorizationCode;
 
 }

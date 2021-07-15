@@ -1,5 +1,6 @@
 package com.crm.oms.service;
 
+import com.crm.oms.enums.MailOrderRecordEnum;
 import com.crm.oms.model.MailOrderRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -12,5 +13,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-07-12
  */
 public interface MailOrderRecordService extends IService<MailOrderRecord> {
+
+
+    void insert(Long mailOrderId, MailOrderRecordEnum mailOrderRecordEnum);
 
 }

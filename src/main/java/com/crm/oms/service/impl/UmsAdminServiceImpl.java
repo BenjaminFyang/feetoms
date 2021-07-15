@@ -1,25 +1,23 @@
 package com.crm.oms.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.crm.oms.common.utils.JwtTokenUtil;
-
 import com.crm.oms.dto.AddUmsAdmin;
-import com.crm.oms.dto.UpdateAdminPasswordParam;
+import com.crm.oms.dto.UpdateAdminParam;
 import com.crm.oms.dto.UpdateUmsAdminParam;
 import com.crm.oms.exception.ApiException;
-import com.crm.oms.mapper.MailOrderRecordMapper;
 import com.crm.oms.mapper.UmsAdminMapper;
-import com.crm.oms.model.MailOrderRecord;
 import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.model.UmsAdminExample;
 import com.crm.oms.model.UmsPermission;
 import com.crm.oms.service.UmsAdminService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -36,6 +34,8 @@ import java.util.List;
 /**
  * UmsAdminService实现类
  */
+
+@Slf4j
 @Service
 public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> implements UmsAdminService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsAdminServiceImpl.class);
@@ -131,6 +131,23 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
         int result = adminMapper.deleteById(adminId);
         if (result <= 0) {
             throw new ApiException("删除用户id不存在");
+        }
+    }
+
+    @Override
+    public void updateAdmin(UpdateAdminParam updateAdminParam) {
+        LambdaUpdateChainWrapper<UmsAdmin> umsAdminLambdaUpdateChainWrapper = new LambdaUpdateChainWrapper<>(adminMapper);
+        boolean update = umsAdminLambdaUpdateChainWrapper.eq(UmsAdmin::getId, updateAdminParam.getId())
+                .set(UmsAdmin::getUsername, updateAdminParam.getUsername())
+                .set(UmsAdmin::getNickName, updateAdminParam.getNickName())
+                .set(UmsAdmin::getEmail, updateAdminParam.getEmail())
+                .set(UmsAdmin::getPassword, passwordEncoder.encode(updateAdminParam.getPassword()))
+                .set(UmsAdmin::getNumberMailbox, updateAdminParam.getNumberMailbox())
+                .set(UmsAdmin::getDueDate, updateAdminParam.getDueDate())
+                .set(UmsAdmin::getUpdateTime, new Date()).update();
+        if (!update) {
+            log.error("UmsAdminServiceImpl.updateAdmin修改账户信息失败updateAdminParam={}", JSON.toJSONString(updateAdminParam));
+            throw new ApiException("修改账户信息失败请联系管理员");
         }
     }
 

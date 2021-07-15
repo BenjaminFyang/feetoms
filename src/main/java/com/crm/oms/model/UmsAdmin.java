@@ -52,7 +52,7 @@ public class UmsAdmin implements Serializable {
     @ApiModelProperty(value = "修改时间")
     private Date updateTime;
 
-    @ApiModelProperty(value = "过期时间")
+    @ApiModelProperty(value = "到期时间")
     private Date dueDate;
 
     @ApiModelProperty(value = "最后登录时间")
@@ -80,4 +80,6 @@ public class UmsAdmin implements Serializable {
                 ", serialVersionUID=" + serialVersionUID +
                 "]";
     }
+
+
 }

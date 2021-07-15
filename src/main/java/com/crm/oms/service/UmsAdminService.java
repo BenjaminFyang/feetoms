@@ -3,6 +3,7 @@ package com.crm.oms.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.crm.oms.dto.AddUmsAdmin;
+import com.crm.oms.dto.UpdateAdminParam;
 import com.crm.oms.dto.UpdateAdminPasswordParam;
 import com.crm.oms.dto.UpdateUmsAdminParam;
 import com.crm.oms.model.MailOrder;
@@ -49,6 +50,9 @@ public interface UmsAdminService extends IService<UmsAdmin> {
 
 
     void delete(Long adminId);
+
+
+    void updateAdmin(UpdateAdminParam updateAdminParam);
 
 
 }

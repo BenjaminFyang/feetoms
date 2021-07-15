@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serializable;
 
+import com.crm.oms.enums.MailOrderRecordEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -53,4 +54,16 @@ public class MailOrderRecord implements Serializable {
     private Date updateTime;
 
 
+    public MailOrderRecord(Long mailOrderId, MailOrderRecordEnum mailOrderRecordEnum, UmsAdmin umsAdmin) {
+        this.mailOrderId = mailOrderId;
+        if (umsAdmin == null) {
+            this.username = "系统";
+        } else {
+            this.username = umsAdmin.getUsername();
+            this.email = umsAdmin.getEmail();
+        }
+        this.note = mailOrderRecordEnum.getMessage();
+        this.createTime = new Date();
+        this.updateTime = new Date();
+    }
 }

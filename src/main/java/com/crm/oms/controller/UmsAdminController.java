@@ -5,6 +5,7 @@ import com.crm.oms.common.api.CommonResult;
 import com.crm.oms.common.utils.TransmittableThreadLocalContext;
 import com.crm.oms.dto.AddUmsAdmin;
 import com.crm.oms.dto.UmsAdminLoginParam;
+import com.crm.oms.dto.UpdateAdminParam;
 import com.crm.oms.dto.UpdateUmsAdminParam;
 import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.model.UmsPermission;
@@ -70,7 +71,6 @@ public class UmsAdminController {
         return CommonResult.success("修改用户密码成功");
     }
 
-
     @ApiOperation(value = "账户管理列表")
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public CommonResult<CommonPage<UmsAdmin>> list(@RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize, @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
@@ -91,6 +91,13 @@ public class UmsAdminController {
     public CommonResult<String> delete(@PathVariable Long adminId) {
         adminService.delete(adminId);
         return CommonResult.success("删除用户成功");
+    }
+
+    @ApiOperation(value = "修改账户信息")
+    @RequestMapping(value = "/updateAdmin", method = RequestMethod.POST)
+    public CommonResult<String> updateAdmin(@Validated @RequestBody UpdateAdminParam updateAdminParam) {
+        adminService.updateAdmin(updateAdminParam);
+        return CommonResult.success("修改账户信息成功");
     }
 
 }

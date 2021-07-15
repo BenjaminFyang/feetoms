@@ -12,7 +12,9 @@ import com.crm.oms.exception.ApiException;
 import com.crm.oms.mapper.UmsAdminMapper;
 import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.model.UmsAdminExample;
+import com.crm.oms.model.UmsAdminRoleRelation;
 import com.crm.oms.model.UmsPermission;
+import com.crm.oms.service.UmsAdminRoleRelationService;
 import com.crm.oms.service.UmsAdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -52,6 +54,9 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
     @Resource
     private UmsAdminMapper adminMapper;
 
+    @Resource
+    private UmsAdminRoleRelationService umsAdminRoleRelationService;
+
     @Override
     public UmsAdmin getAdminByUsername(String username) {
         UmsAdminExample example = new UmsAdminExample();
@@ -81,6 +86,11 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
         String encodePassword = passwordEncoder.encode(umsAdmin.getPassword());
         umsAdmin.setPassword(encodePassword);
         adminMapper.insert(umsAdmin);
+
+        UmsAdminRoleRelation umsAdminRoleRelation = new UmsAdminRoleRelation();
+        umsAdminRoleRelation.setAdminId(umsAdmin.getId());
+        umsAdminRoleRelation.setRoleId(2L);
+        umsAdminRoleRelationService.save(umsAdminRoleRelation);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.crm.oms.model;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -12,10 +13,18 @@ import com.baomidou.mybatisplus.annotation.TableField;
 
 import java.io.Serializable;
 
+import com.crm.oms.common.utils.ShowMail;
+import com.crm.oms.enums.DeliveryStatusEnum;
+import com.crm.oms.enums.IsLockedEnum;
+import com.crm.oms.enums.OrderStatusEnum;
+import com.crm.oms.enums.OrderWebsiteEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.jetbrains.annotations.NotNull;
+
+import javax.mail.MessagingException;
 
 /**
  * <p>
@@ -87,7 +96,7 @@ public class MailOrder implements Serializable {
     private Integer deliveryStatus;
 
     @ApiModelProperty(value = "下单时间")
-    private Date orderTime;
+    private String orderTime;
 
     @ApiModelProperty(value = "发货时间")
     private Date deliveryTime;
@@ -103,6 +112,68 @@ public class MailOrder implements Serializable {
 
     @ApiModelProperty(value = "修改时间")
     private Date updateTime;
+
+
+    public void build0(ShowMail showMail) throws MessagingException, UnsupportedEncodingException {
+
+        String bodyText = showMail.getBodyText();
+        this.orderNumber = getOrderNumber(showMail);
+        this.sku = null;
+        this.productPicture = null;
+        this.size = getSize(bodyText);
+        this.orderWebsite = getOrderWebsite(showMail);
+        this.originalPrice = new BigDecimal(getOriginalPrice(bodyText));
+        this.paymentAmount = new BigDecimal(getPaymentAmount(bodyText));
+        this.trackingEmail = showMail.getMailAddress("to");
+        this.orderState = OrderStatusEnum.TYPE0.getCode();
+        this.carrierCompany = null;
+        this.address = bodyText.substring(bodyText.indexOf("Shipping to:") + 12, bodyText.indexOf("http")).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ");
+        this.foreignWaybillNumber = null;
+        this.waybillStatus = 0;
+        this.transitStatus = 0;
+        this.deliveryStatus = DeliveryStatusEnum.TYPE0.getCode();
+        this.orderTime = getOrderTime(bodyText);
+        this.deliveryTime = null;
+        this.note = OrderStatusEnum.TYPE0.getMessage();
+        this.isLocked = IsLockedEnum.TYPE0.getCode();
+        this.createTime = new Date();
+        this.updateTime = new Date();
+    }
+
+    @NotNull
+    private String getOrderTime(String bodyText) {
+        int orderDateIndex = bodyText.indexOf("Order Date");
+        int index = bodyText.indexOf(", 2021");
+        index = bodyText.indexOf(", 2021", index + 1);
+        return bodyText.substring(orderDateIndex + 10, index).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ") + " 2021";
+    }
+
+    private String getPaymentAmount(String bodyText) {
+        return bodyText.substring(bodyText.indexOf("Card-") + 7, bodyText.indexOf("Shipping & Handling"));
+    }
+
+    @NotNull
+    private String getOriginalPrice(String bodyText) {
+        return bodyText.substring(bodyText.indexOf("Subtotal") + 9, bodyText.indexOf("Gift"));
+    }
+
+    private Integer getOrderWebsite(ShowMail showMail) throws MessagingException {
+        String from = showMail.getFrom();
+        String website = from.substring(from.indexOf("\"") + 1, from.indexOf("\"<"));
+        return OrderWebsiteEnum.ofMessage(website).getCode();
+    }
+
+    @NotNull
+    private String getSize(String bodyText) {
+        return bodyText.substring(bodyText.indexOf("Size") + 5, bodyText.indexOf("Qty"));
+    }
+
+    @NotNull
+    private String getOrderNumber(ShowMail showMail) throws MessagingException, UnsupportedEncodingException {
+        // 得到订单号
+        String subject = showMail.getSubject();
+        return subject.substring(subject.indexOf("(") + 2, subject.indexOf(")"));
+    }
 
 
 }

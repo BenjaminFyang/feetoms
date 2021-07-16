@@ -41,4 +41,8 @@ public enum OrderWebsiteEnum {
     public static OrderWebsiteEnum of(Integer code) {
         return Arrays.stream(values()).filter(anEnum -> anEnum.getCode().equals(code)).findFirst().orElse(null);
     }
+
+    public static OrderWebsiteEnum ofMessage(String message) {
+        return Arrays.stream(values()).filter(anEnum -> anEnum.getMessage().equals(message)).findFirst().orElse(null);
+    }
 }

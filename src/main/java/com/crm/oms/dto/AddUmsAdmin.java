@@ -36,7 +36,7 @@ public class AddUmsAdmin {
     private Integer numberMailbox;
 
     @NotNull(message = "到期时间不能为空")
-    @Future(message = "输入的过期时间不应该是将来的时间")
+    @Future(message = "输入的过期时间应该是将来的时间")
     @ApiModelProperty(value = "到期时间")
     private Date dueDate;
 

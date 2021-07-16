@@ -1,5 +1,7 @@
 server:
   port: 9899
+  servlet:
+    context-path: /feet
 
 spring:
   datasource:

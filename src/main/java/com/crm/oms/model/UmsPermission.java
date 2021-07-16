@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 @Data
@@ -38,6 +39,9 @@ public class UmsPermission implements Serializable {
 
     @ApiModelProperty(value = "排序")
     private Integer sort;
+
+
+    List<UmsPermission> children;
 
     private static final long serialVersionUID = 1L;
 

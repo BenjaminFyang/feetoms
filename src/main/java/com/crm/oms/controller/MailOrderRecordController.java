@@ -1,14 +1,17 @@
 package com.crm.oms.controller;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.crm.oms.common.api.CommonPage;
 import com.crm.oms.common.api.CommonResult;
+import com.crm.oms.model.MailOrder;
 import com.crm.oms.model.MailOrderRecord;
 import com.crm.oms.service.MailOrderRecordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -31,9 +34,13 @@ public class MailOrderRecordController {
 
     @ApiOperation(value = "1、邮件订单操作日志列表")
     @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public CommonResult<CommonPage<MailOrderRecord>> list() {
-        List<MailOrderRecord> mailOrderList = mailOrderRecordService.list();
-        return CommonResult.success(CommonPage.restPage(mailOrderList));
+    public CommonResult<CommonPage<MailOrderRecord>> list(
+            @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+
+        Page<MailOrderRecord> page = new Page<>(pageNum, pageSize);
+        Page<MailOrderRecord> orderRecordPage = mailOrderRecordService.page(page);
+        return CommonResult.success(CommonPage.restPage(orderRecordPage));
     }
 
 }

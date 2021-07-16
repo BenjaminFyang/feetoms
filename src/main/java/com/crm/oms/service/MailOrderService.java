@@ -1,5 +1,6 @@
 package com.crm.oms.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.crm.oms.dto.MailOrderEditParam;
 import com.crm.oms.dto.MailOrderParam;
 import com.crm.oms.model.MailOrder;
@@ -27,7 +28,7 @@ public interface MailOrderService extends IService<MailOrder> {
      * @param pageNum        第几页
      * @return the list of MailOrder
      */
-    List<MailOrder> list(MailOrderParam mailOrderParam, Integer pageSize, Integer pageNum);
+    Page<MailOrder> list(MailOrderParam mailOrderParam, Integer pageSize, Integer pageNum);
 
     List<MailOrder> export(MailOrderParam mailOrderParam);
 

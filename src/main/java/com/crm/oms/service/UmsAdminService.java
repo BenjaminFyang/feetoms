@@ -55,4 +55,5 @@ public interface UmsAdminService extends IService<UmsAdmin> {
     void updateAdmin(UpdateAdminParam updateAdminParam);
 
 
+
 }

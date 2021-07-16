@@ -2,6 +2,7 @@ package com.crm.oms.controller;
 
 
 import com.alibaba.excel.EasyExcel;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.crm.oms.common.api.CommonPage;
 import com.crm.oms.common.api.CommonResult;
 import com.crm.oms.common.utils.ConvertUtil;
@@ -47,8 +48,8 @@ public class MailOrderController {
                                                     @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
                                                     @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
 
-        List<MailOrder> mailOrderList = mailOrderService.list(mailOrderParam, pageSize, pageNum);
-        return CommonResult.success(CommonPage.restPage(mailOrderList));
+        Page<MailOrder> orderPage = mailOrderService.list(mailOrderParam, pageSize, pageNum);
+        return CommonResult.success(CommonPage.restPage(orderPage));
     }
 
     @ApiOperation(value = "2、订单导出")

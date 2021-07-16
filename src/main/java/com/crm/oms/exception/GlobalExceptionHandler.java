@@ -1,6 +1,7 @@
 package com.crm.oms.exception;
 
 import com.crm.oms.common.api.CommonResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * 全局异常处理
  */
+
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -26,7 +29,8 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
-    public CommonResult<String> handle() {
+    public CommonResult<String> handle(Exception exception) {
+        log.error("出现异常", exception);
         return CommonResult.failed("服务器出现异常");
     }
 

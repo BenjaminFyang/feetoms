@@ -2,6 +2,7 @@ package com.crm.oms.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.crm.oms.dto.MailOrderEditParam;
 import com.crm.oms.dto.MailOrderParam;
@@ -37,9 +38,9 @@ public class MailOrderServiceImpl extends ServiceImpl<MailOrderMapper, MailOrder
     private MailOrderMapper mailOrderMapper;
 
     @Override
-    public List<MailOrder> list(MailOrderParam mailOrderParam, Integer pageSize, Integer pageNum) {
-        PageHelper.startPage(pageNum, pageSize);
-        return mailOrderMapper.selectList(mailOrderParam.list());
+    public Page<MailOrder> list(MailOrderParam mailOrderParam, Integer pageSize, Integer pageNum) {
+        Page<MailOrder> page = new Page<>(pageNum, pageSize);
+        return page(page, mailOrderParam.list());
     }
 
     @Override

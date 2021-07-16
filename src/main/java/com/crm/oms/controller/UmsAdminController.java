@@ -1,5 +1,6 @@
 package com.crm.oms.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.crm.oms.common.api.CommonPage;
 import com.crm.oms.common.api.CommonResult;
 import com.crm.oms.common.utils.TransmittableThreadLocalContext;
@@ -7,10 +8,10 @@ import com.crm.oms.dto.AddUmsAdmin;
 import com.crm.oms.dto.UmsAdminLoginParam;
 import com.crm.oms.dto.UpdateAdminParam;
 import com.crm.oms.dto.UpdateUmsAdminParam;
+import com.crm.oms.mapper.UmsAdminMapper;
 import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.model.UmsPermission;
 import com.crm.oms.service.UmsAdminService;
-import com.github.pagehelper.PageHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +19,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 后台用户管理
@@ -34,6 +34,9 @@ public class UmsAdminController {
 
     @Resource
     private UmsAdminService adminService;
+
+    @Resource
+    private UmsAdminMapper umsAdminMapper;
 
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
@@ -61,7 +64,7 @@ public class UmsAdminController {
     public CommonResult<List<UmsPermission>> getPermissionList() {
         UmsAdmin umsAdmin = TransmittableThreadLocalContext.getAuthDataBo();
         List<UmsPermission> permissionList = adminService.getPermissionList(umsAdmin.getId());
-        return CommonResult.success(permissionList);
+        return CommonResult.success(list2Tree(permissionList));
     }
 
     @ApiOperation("修改个人用户信息")
@@ -74,9 +77,9 @@ public class UmsAdminController {
     @ApiOperation(value = "账户管理列表")
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public CommonResult<CommonPage<UmsAdmin>> list(@RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize, @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<UmsAdmin> umsAdminList = adminService.list();
-        return CommonResult.success(CommonPage.restPage(umsAdminList));
+        Page<UmsAdmin> page = new Page<>(pageNum, pageSize);
+        Page<UmsAdmin> pageResult = adminService.page(page);
+        return CommonResult.success(CommonPage.restPage(pageResult));
     }
 
     @ApiOperation(value = "添加用户")
@@ -98,6 +101,14 @@ public class UmsAdminController {
     public CommonResult<String> updateAdmin(@Validated @RequestBody UpdateAdminParam updateAdminParam) {
         adminService.updateAdmin(updateAdminParam);
         return CommonResult.success("修改账户信息成功");
+    }
+
+
+    public static List<UmsPermission> list2Tree(List<UmsPermission> treeNodeList) {
+
+        Map<Long, List<UmsPermission>> nodeByParentIdMap = treeNodeList.stream().collect(Collectors.groupingBy(UmsPermission::getPid));
+        return treeNodeList.stream().filter(treeNode -> treeNode.getId().equals(0L))
+                .peek(node -> node.setChildren(nodeByParentIdMap.get(node.getId()))).collect(Collectors.toList());
     }
 
 }

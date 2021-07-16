@@ -1,11 +1,13 @@
 package com.crm.oms.controller;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.crm.oms.common.api.CommonPage;
 import com.crm.oms.common.api.CommonResult;
 import com.crm.oms.dto.MailManagementEditParam;
 import com.crm.oms.dto.MailManagementParam;
 import com.crm.oms.model.MailManagement;
+import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.service.MailManagementService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,8 +35,9 @@ public class MailManagementController {
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public CommonResult<CommonPage<MailManagement>> list(@RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
                                                          @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<MailManagement> mailManagementList = mailManagementService.list(pageSize, pageNum);
-        return CommonResult.success(CommonPage.restPage(mailManagementList));
+        Page<MailManagement> page = new Page<>(pageNum, pageSize);
+        Page<MailManagement> mailManagementPage = mailManagementService.page(page);
+        return CommonResult.success(CommonPage.restPage(mailManagementPage));
     }
 
     @ApiOperation(value = "2、账号同步新增")

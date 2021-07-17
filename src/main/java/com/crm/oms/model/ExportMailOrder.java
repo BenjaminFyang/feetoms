@@ -70,7 +70,7 @@ public class ExportMailOrder implements Serializable {
     private String deliveryStatus;
 
     @ExcelProperty(value = "下单时间")
-    private Date orderTime;
+    private String orderTime;
 
     @ExcelProperty(value = "发货时间")
     private Date deliveryTime;

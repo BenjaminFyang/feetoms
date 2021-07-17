@@ -107,7 +107,6 @@ public class OrderMailTask {
                     String messageID = ((MimeMessage) message).getMessageID();
                     String uk = messageID.substring(messageID.indexOf("<") + 1, messageID.indexOf(".xt.local"));
 
-
                     LambdaQueryWrapper<MailOrderUkNumber> lambdaQueryWrapper = new LambdaQueryWrapper<>();
                     LambdaQueryWrapper<MailOrderUkNumber> numberLambdaQueryWrapper = lambdaQueryWrapper.eq(MailOrderUkNumber::getUkNumber, uk);
                     List<MailOrderUkNumber> mailOrderUkNumberList = mailOrderUkNumberMapper.selectList(numberLambdaQueryWrapper);
@@ -115,7 +114,6 @@ public class OrderMailTask {
                         log.error("邮件已经解析过了请核实uk={}", uk);
                         continue;
                     }
-
 
                     // 开始封装邮件的订单
                     MailOrder mailOrder = new MailOrder();

@@ -13,6 +13,7 @@ import com.crm.oms.model.MailOrder;
 import com.crm.oms.service.MailOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
  */
 
 @Api(tags = "订单信息管理")
-@RestController
+@Controller
 @RequestMapping("/mailOrder")
 public class MailOrderController {
 
@@ -43,6 +44,7 @@ public class MailOrderController {
     public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd(HH-mm-ss)");
 
     @ApiOperation(value = "1、订单信息列表")
+    @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public CommonResult<CommonPage<MailOrder>> list(@Valid @RequestBody MailOrderParam mailOrderParam,
                                                     @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
@@ -80,6 +82,7 @@ public class MailOrderController {
     }
 
     @ApiOperation(value = "3、订单编辑")
+    @ResponseBody
     @RequestMapping(value = "/editMailOrder", method = RequestMethod.POST)
     public CommonResult<String> editMailOrder(@Valid @RequestBody MailOrderEditParam mailOrderEditParam) {
         mailOrderService.editMailOrder(mailOrderEditParam);
@@ -87,6 +90,7 @@ public class MailOrderController {
     }
 
     @ApiOperation(value = "4、订单锁定")
+    @ResponseBody
     @RequestMapping(value = "/lockingMailOrder/{mailOrderId}", method = RequestMethod.GET)
     public CommonResult<String> lockingMailOrder(@PathVariable Long mailOrderId) {
         mailOrderService.lockingMailOrder(mailOrderId);
@@ -94,6 +98,7 @@ public class MailOrderController {
     }
 
     @ApiOperation(value = "5、订单锁定解除")
+    @ResponseBody
     @RequestMapping(value = "/relieveMailOrder/{mailOrderId}", method = RequestMethod.POST)
     public CommonResult<String> relieveMailOrder(@PathVariable Long mailOrderId) {
         mailOrderService.relieveMailOrder(mailOrderId);
@@ -101,6 +106,7 @@ public class MailOrderController {
     }
 
     @ApiOperation(value = "6、订单删除")
+    @ResponseBody
     @RequestMapping(value = "/deleteMailOrder/{mailOrderId}", method = RequestMethod.POST)
     public CommonResult<String> deleteMailOrder(@PathVariable Long mailOrderId) {
         mailOrderService.deleteMailOrder(mailOrderId);

@@ -3,6 +3,9 @@ package com.crm.oms.enums;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
 
@@ -10,9 +13,9 @@ import static java.util.Arrays.stream;
 @Getter
 public enum MailTypeEnum {
 
-    TYPE1(3, 1, "imaps", "imap.163.com"),
-    TYPE2(3, 2, "smtp", "smtp.163.com"),
-    TYPE3(3, 3, "pop", "pop.163.com");
+    TYPE1(3, 0, "imaps", "imap.163.com"),
+    TYPE2(3, 1, "smtp", "smtp.163.com"),
+    TYPE3(3, 2, "pop", "pop.163.com");
 
     private Integer code;
     private Integer type;
@@ -21,7 +24,7 @@ public enum MailTypeEnum {
 
     MailTypeEnum(Integer code, Integer type, String node, String message) {
         this.code = code;
-        this.code = type;
+        this.type = type;
         this.node = node;
         this.message = message;
     }
@@ -41,6 +44,17 @@ public enum MailTypeEnum {
     }
 
     public static MailTypeEnum ofType(Integer type) {
-        return Arrays.stream(values()).filter(anEnum -> anEnum.getType().equals(type)).findFirst().orElse(null);
+        MailTypeEnum[] mailTypeEnums = values();
+        List<MailTypeEnum> typeEnumList = stream(mailTypeEnums).collect(Collectors.toList());
+
+
+        return typeEnumList.stream()
+
+                .filter(typeEnum -> typeEnum.getType().equals(type))
+                .findFirst().orElse(null);
+
+
     }
+
+
 }

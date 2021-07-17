@@ -57,6 +57,8 @@ public class MailManagement implements Serializable {
     @ApiModelProperty(value = "修改时间")
     private Date updateTime;
 
+    public MailManagement() {
+    }
 
     public MailManagement(MailManagementParam mailManagementParam) {
         this.mailType = mailManagementParam.getMailType();

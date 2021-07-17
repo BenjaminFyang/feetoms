@@ -25,6 +25,7 @@ import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 /**
  * <p>
@@ -116,6 +117,7 @@ public class MailOrder implements Serializable {
 
     public void build0(ShowMail showMail) throws MessagingException, UnsupportedEncodingException {
 
+
         String bodyText = showMail.getBodyText();
         this.orderNumber = getOrderNumber(showMail);
         this.sku = null;
@@ -127,7 +129,7 @@ public class MailOrder implements Serializable {
         this.trackingEmail = showMail.getMailAddress("to");
         this.orderState = OrderStatusEnum.TYPE0.getCode();
         this.carrierCompany = null;
-        this.address = bodyText.substring(bodyText.indexOf("Shipping to:") + 12, bodyText.indexOf("http")).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ");
+        this.address = bodyText.substring(bodyText.indexOf("Shipping to:") + 12, bodyText.indexOf("http")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
         this.foreignWaybillNumber = null;
         this.waybillStatus = 0;
         this.transitStatus = 0;
@@ -149,12 +151,15 @@ public class MailOrder implements Serializable {
     }
 
     private String getPaymentAmount(String bodyText) {
-        return bodyText.substring(bodyText.indexOf("Card-") + 7, bodyText.indexOf("Shipping & Handling"));
+        return bodyText.substring(bodyText.indexOf("Card-") + 7, bodyText.indexOf("Shipping & Handling")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
     }
 
     @NotNull
     private String getOriginalPrice(String bodyText) {
-        return bodyText.substring(bodyText.indexOf("Subtotal") + 9, bodyText.indexOf("Gift"));
+        String substring = bodyText.substring(bodyText.indexOf("Subtotal") + 9, bodyText.indexOf("Gift")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
+
+        System.out.println(substring);
+        return substring;
     }
 
     private Integer getOrderWebsite(ShowMail showMail) throws MessagingException {
@@ -165,7 +170,7 @@ public class MailOrder implements Serializable {
 
     @NotNull
     private String getSize(String bodyText) {
-        return bodyText.substring(bodyText.indexOf("Size") + 5, bodyText.indexOf("Qty"));
+        return bodyText.substring(bodyText.indexOf("Size") + 5, bodyText.indexOf("Qty")).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ");
     }
 
     @NotNull

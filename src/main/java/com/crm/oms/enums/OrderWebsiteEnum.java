@@ -10,7 +10,7 @@ import static java.util.Arrays.stream;
 @Getter
 public enum OrderWebsiteEnum {
 
-    TYPE0(0, "Nike"),
+    TYPE0(0, "Nike.com"),
     TYPE1(1, "Footlocker"),
     TYPE2(2, "Eastbay"),
     TYPE3(3, "Champs"),

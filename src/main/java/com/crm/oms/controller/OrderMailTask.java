@@ -3,16 +3,15 @@ package com.crm.oms.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.crm.oms.common.utils.ShowMail;
+import com.crm.oms.enums.MailOrderRecordEnum;
 import com.crm.oms.enums.MailTypeEnum;
 import com.crm.oms.mapper.MailManagementMapper;
 import com.crm.oms.mapper.MailOrderUkNumberMapper;
 import com.crm.oms.model.MailManagement;
 import com.crm.oms.model.MailOrder;
+import com.crm.oms.model.MailOrderRecord;
 import com.crm.oms.model.MailOrderUkNumber;
-import com.crm.oms.service.MailManagementService;
-import com.crm.oms.service.MailOrderService;
-import com.crm.oms.service.MailOrderUkNumberService;
-import com.crm.oms.service.RedisService;
+import com.crm.oms.service.*;
 import com.github.pagehelper.util.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -58,6 +57,9 @@ public class OrderMailTask {
 
     @Resource
     private MailOrderUkNumberMapper mailOrderUkNumberMapper;
+
+    @Resource
+    private MailOrderRecordService mailOrderRecordService;
 
     String format = "yyyy-MM-dd HH:mm:ss";
 
@@ -119,6 +121,10 @@ public class OrderMailTask {
                     MailOrder mailOrder = new MailOrder();
                     mailOrder.build0(showMail);
                     mailOrderService.save(mailOrder);
+
+                    // 增加操作日志
+                    mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE0);
+
                 }
 
             } catch (Exception e) {

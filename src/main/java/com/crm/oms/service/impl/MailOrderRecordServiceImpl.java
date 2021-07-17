@@ -27,7 +27,7 @@ public class MailOrderRecordServiceImpl extends ServiceImpl<MailOrderRecordMappe
 
     @Override
     public void insert(Long mailOrderId, MailOrderRecordEnum mailOrderRecordEnum) {
-        UmsAdmin umsAdmin = TransmittableThreadLocalContext.getAuthDataBo();
+        UmsAdmin umsAdmin = null;
         MailOrderRecord mailOrderRecord = new MailOrderRecord(mailOrderId, mailOrderRecordEnum, umsAdmin);
         mailOrderRecordMapper.insert(mailOrderRecord);
     }

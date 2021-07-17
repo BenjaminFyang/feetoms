@@ -53,6 +53,8 @@ public class MailOrderRecord implements Serializable {
     @ApiModelProperty(value = "修改时间")
     private Date updateTime;
 
+    public MailOrderRecord() {
+    }
 
     public MailOrderRecord(Long mailOrderId, MailOrderRecordEnum mailOrderRecordEnum, UmsAdmin umsAdmin) {
         this.mailOrderId = mailOrderId;

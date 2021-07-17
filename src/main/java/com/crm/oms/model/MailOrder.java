@@ -117,7 +117,6 @@ public class MailOrder implements Serializable {
 
     public void build0(ShowMail showMail) throws MessagingException, UnsupportedEncodingException {
 
-
         String bodyText = showMail.getBodyText();
         this.orderNumber = getOrderNumber(showMail);
         this.sku = null;

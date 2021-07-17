@@ -1,6 +1,7 @@
 package com.crm.oms.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.crm.oms.common.api.CommonPage;
 import com.crm.oms.common.api.CommonResult;
@@ -36,10 +37,13 @@ public class MailOrderRecordController {
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public CommonResult<CommonPage<MailOrderRecord>> list(
             @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "mailOrder") Long mailOrder) {
 
         Page<MailOrderRecord> page = new Page<>(pageNum, pageSize);
-        Page<MailOrderRecord> orderRecordPage = mailOrderRecordService.page(page);
+        LambdaQueryWrapper<MailOrderRecord> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<MailOrderRecord> orderRecordLambdaQueryWrapper = lambdaQueryWrapper.eq(MailOrderRecord::getMailOrderId, mailOrder);
+        Page<MailOrderRecord> orderRecordPage = mailOrderRecordService.page(page, orderRecordLambdaQueryWrapper);
         return CommonResult.success(CommonPage.restPage(orderRecordPage));
     }
 

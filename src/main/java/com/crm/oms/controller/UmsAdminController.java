@@ -13,6 +13,7 @@ import com.crm.oms.model.UmsPermission;
 import com.crm.oms.service.UmsAdminService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -109,9 +110,22 @@ public class UmsAdminController {
 
 
     public static List<UmsPermission> list2Tree(List<UmsPermission> treeNodeList) {
-        Map<Long, List<UmsPermission>> nodeByParentIdMap = treeNodeList.stream().collect(Collectors.groupingBy(UmsPermission::getPid));
-        return treeNodeList.stream().filter(treeNode -> treeNode.getId().equals(0L))
-                .peek(node -> node.setChildren(nodeByParentIdMap.get(node.getId()))).collect(Collectors.toList());
+
+        return treeNodeList.stream()
+                .filter(menu -> menu.getPid().equals(0L))
+                .map(menu -> covertMenuNode(menu, treeNodeList)).collect(Collectors.toList());
+
+
+    }
+
+    private static UmsPermission covertMenuNode(UmsPermission menu, List<UmsPermission> menuList) {
+        UmsPermission node = new UmsPermission();
+        BeanUtils.copyProperties(menu, node);
+        List<UmsPermission> children = menuList.stream()
+                .filter(subMenu -> subMenu.getPid().equals(menu.getId()))
+                .map(subMenu -> covertMenuNode(subMenu, menuList)).collect(Collectors.toList());
+        node.setChildren(children);
+        return node;
     }
 
 }

@@ -127,7 +127,7 @@ public class MailOrder implements Serializable {
         this.trackingEmail = showMail.getMailAddress("to");
         this.orderState = orderStatusEnum.getCode();
         this.carrierCompany = null;
-        this.address = bodyText.substring(bodyText.indexOf("Shipping to:") + 12, bodyText.indexOf("http")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
+        this.address = bodyText.substring(bodyText.indexOf("Shipping to:") + 12, bodyText.indexOf("http")).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ");
         this.foreignWaybillNumber = null;
         this.waybillStatus = 0;
         this.transitStatus = 0;
@@ -197,7 +197,7 @@ public class MailOrder implements Serializable {
 
     @NotNull
     private String getSize(String bodyText) {
-        return bodyText.substring(bodyText.indexOf("Size") + 5, bodyText.indexOf("Qty")).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ");
+        return bodyText.substring(bodyText.indexOf("Size") + 5, bodyText.indexOf("Qty")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
     }
 
     @NotNull

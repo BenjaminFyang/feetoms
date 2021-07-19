@@ -32,6 +32,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -71,7 +72,7 @@ public class OrderMailTask {
     @ApiOperation(value = "1、邮件")
 //    @Scheduled(cron = "0 0/10 * ? * ?")
     @RequestMapping(value = "/list22", method = RequestMethod.POST)
-    private void cancelTimeOutOrder() {
+    private List<String> cancelTimeOutOrder() {
 
         log.info("开始解析邮件");
 
@@ -83,6 +84,8 @@ public class OrderMailTask {
         date = cal.getTime();
         LambdaQueryWrapper<MailManagement> objectLambdaQueryWrapper = new LambdaQueryWrapper<>();
         List<MailManagement> mailManagementList = mailManagementMapper.selectList(objectLambdaQueryWrapper.eq(MailManagement::getPassNot, 0));
+
+        List<String> objects = new ArrayList<>();
         for (MailManagement mailManagement : mailManagementList) {
 
             Integer serviceType = mailManagement.getServiceType();
@@ -97,14 +100,6 @@ public class OrderMailTask {
             String startDate = sdf.format(date);
 
 
-//            String host = "imap.163.com";
-//            String username = "aidefs13@163.com";
-//            String password = "DWXADSUNQYKYUCWE";
-//            String protocol = "imaps";
-//            String fromMail = null;
-//            String startDate = "2021-6-01 23:35:40";
-
-
             try {
 
                 List<Message> messageList = filterMessage(getWEMessage(host, username, password, protocol), null, startDate);
@@ -115,34 +110,36 @@ public class OrderMailTask {
                     // 得到当前邮件的唯一k
                     String uk = ((MimeMessage) message).getMessageID();
 //                    String uk = messageID.substring(messageID.indexOf("<") + 1, messageID.indexOf(".xt.local"));
+                    String subject = showMail.getSubject();
 
                     LambdaQueryWrapper<MailOrderUkNumber> lambdaQueryWrapper = new LambdaQueryWrapper<>();
                     LambdaQueryWrapper<MailOrderUkNumber> numberLambdaQueryWrapper = lambdaQueryWrapper.eq(MailOrderUkNumber::getUkNumber, uk);
                     List<MailOrderUkNumber> mailOrderUkNumberList = mailOrderUkNumberMapper.selectList(numberLambdaQueryWrapper);
                     if (!CollectionUtils.isEmpty(mailOrderUkNumberList)) {
-                        log.error("邮件已经解析过了请核实uk={}", uk);
+                        log.error("开始解析邮件插入订单uk={}", uk);
+                        // 首次下单 已下单d
+                        objects.add(subject);
+                        if (subject.contains("Thank You for Your Order")) {
+                            // 开始封装邮件的订单
+                            MailOrder mailOrder = new MailOrder();
+                            mailOrder.build0(showMail, OrderStatusEnum.TYPE0);
+                            mailOrderService.save(mailOrder);
+
+                            // 增加操作日志
+                            mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE0);
+
+                            // 增加邮件订单标识信息
+                            MailOrderUkNumber mailOrderUkNumber = new MailOrderUkNumber();
+                            mailOrderUkNumber.setMailOrderId(mailOrder.getId());
+                            mailOrderUkNumber.setUkNumber(uk);
+                            mailOrderUkNumber.setUpdateTime(new Date());
+                            mailOrderUkNumber.setCreateTime(new Date());
+                            mailOrderUkNumberMapper.insert(mailOrderUkNumber);
+                        }
+
                         continue;
                     }
 
-                    // 首次下单 已下单
-                    String subject = showMail.getSubject();
-                    if (subject.contains("Thank You for Your Order")) {
-                        // 开始封装邮件的订单
-                        MailOrder mailOrder = new MailOrder();
-                        mailOrder.build0(showMail, OrderStatusEnum.TYPE0);
-                        mailOrderService.save(mailOrder);
-
-                        // 增加操作日志
-                        mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE0);
-
-                        // 增加邮件订单标识信息
-                        MailOrderUkNumber mailOrderUkNumber = new MailOrderUkNumber();
-                        mailOrderUkNumber.setMailOrderId(mailOrder.getId());
-                        mailOrderUkNumber.setUkNumber(uk);
-                        mailOrderUkNumber.setUpdateTime(new Date());
-                        mailOrderUkNumber.setCreateTime(new Date());
-                        mailOrderUkNumberMapper.insert(mailOrderUkNumber);
-                    }
 
                     // 已发货
                     if (subject.contains("Looking for Your Nike Order")) {
@@ -151,14 +148,14 @@ public class OrderMailTask {
                         // 查询订单是否存在
                         LambdaQueryWrapper<MailOrder> objectLambdaQueryWrapper1 = new LambdaQueryWrapper<>();
                         objectLambdaQueryWrapper1.eq(MailOrder::getOrderNumber, orderNumber);
-                        MailOrder orderServiceOne = mailOrderService.list(objectLambdaQueryWrapper1).get(0);
-                        if (orderServiceOne == null) {
+                        List<MailOrder> mailOrderList = mailOrderService.list(objectLambdaQueryWrapper1);
+                        if (CollectionUtils.isEmpty(mailOrderList)) {
                             log.error("OrderMailTask邮件已下单状态不存在uk={}", uk);
                             continue;
                         }
 
                         MailOrder mailOrder = new MailOrder();
-                        mailOrder.build2(showMail, orderServiceOne.getId(), OrderStatusEnum.TYPE2);
+                        mailOrder.build2(showMail, mailOrderList.get(0).getId(), OrderStatusEnum.TYPE2);
                         mailOrderService.updateById(mailOrder);
 
                         // 增加操作日志
@@ -213,14 +210,14 @@ public class OrderMailTask {
                         String orderNumber = MailOrder.getOrderNumber(showMail);
                         LambdaQueryWrapper<MailOrder> objectLambdaQueryWrapper4 = new LambdaQueryWrapper<>();
                         objectLambdaQueryWrapper4.eq(MailOrder::getOrderNumber, orderNumber);
-                        MailOrder orderServiceOne = mailOrderService.list(objectLambdaQueryWrapper4).get(0);
-                        if (orderServiceOne == null) {
+                        List<MailOrder> mailOrderList = mailOrderService.list(objectLambdaQueryWrapper4);
+                        if (CollectionUtils.isEmpty(mailOrderList)) {
                             log.error("OrderMailTask邮件派件延迟不存在uk={}", uk);
                             continue;
                         }
 
                         MailOrder mailOrder = new MailOrder();
-                        mailOrder.build3(orderServiceOne.getId(), OrderStatusEnum.TYPE5);
+                        mailOrder.build3(mailOrderList.get(0).getId(), OrderStatusEnum.TYPE5);
                         mailOrderService.updateById(mailOrder);
 
                         // 增加操作日志
@@ -254,6 +251,8 @@ public class OrderMailTask {
                 e.printStackTrace();
             }
         }
+
+        return objects;
 
     }
 

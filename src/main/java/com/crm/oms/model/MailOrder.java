@@ -162,8 +162,6 @@ public class MailOrder implements Serializable {
     }
 
 
-
-
     private Date getDeliveryTime(ShowMail showMail) throws MessagingException, ParseException {
         String sentDate = showMail.getSentDate();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -204,12 +202,12 @@ public class MailOrder implements Serializable {
 
     @NotNull
     private String getOrderNumber(String bodyText) {
-        return bodyText.substring(bodyText.indexOf("Order Number") + 13, bodyText.indexOf("Order Date")).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ");
+        return bodyText.substring(bodyText.indexOf("Order Number") + 13, bodyText.indexOf("Order Date")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
     }
 
     public static String getOrderNumber(ShowMail showMail) {
         String bodyText = showMail.getBodyText();
-        return bodyText.substring(bodyText.indexOf("Order Number") + 13, bodyText.indexOf("Order Date")).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ");
+        return bodyText.substring(bodyText.indexOf("Order Number") + 13, bodyText.indexOf("Order Date")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
     }
 
 

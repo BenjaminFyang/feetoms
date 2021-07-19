@@ -3,6 +3,8 @@ package com.crm.oms.common.api;
 import cn.hutool.core.convert.Convert;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.util.CollectionUtils;
 
@@ -13,11 +15,19 @@ import java.util.List;
  */
 
 @Data
+@ApiModel(value = "分页对象", description = "分页细信息")
 public class CommonPage<T> {
+
+    @ApiModelProperty(value = "当前页数")
     private Integer pageNum;
+
+    @ApiModelProperty(value = "当前数量")
     private Integer pageSize;
+
     private Integer totalPage;
     private Long total;
+
+    @ApiModelProperty(value = "对象")
     private List<T> list;
 
     /**

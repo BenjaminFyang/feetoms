@@ -30,7 +30,7 @@ public class AddUmsAdmin {
     @ApiModelProperty(value = "密码")
     private String password;
 
-    @Min(value = 1, message = "邮件个数不能为负数")
+    @Min(value = 1, message = "邮件个数应该大于0")
     @NotNull(message = "邮箱个数上限不能为空")
     @ApiModelProperty(value = "邮箱个数上限")
     private Integer numberMailbox;

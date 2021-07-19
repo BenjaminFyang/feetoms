@@ -43,15 +43,15 @@ public class MailOrderController {
 
     public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd(HH-mm-ss)");
 
-    @ApiOperation(value = "1、订单信息列表")
+    @ApiOperation(value = "订单信息列表")
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public CommonResult<CommonPage<MailOrder>> list(@Valid @RequestBody MailOrderParam mailOrderParam,
-                                                    @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
-                                                    @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-
-        Page<MailOrder> orderPage = mailOrderService.list(mailOrderParam, pageSize, pageNum);
-        return CommonResult.success(CommonPage.restPage(orderPage));
+    public CommonResult<CommonPage<MailOrder>> mailOrderList(@Valid @RequestBody MailOrderParam mailOrderParam,
+                                                             @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
+                                                             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        Page<MailOrder> orderPage = mailOrderService.page(new Page<>(pageNum, pageSize), mailOrderParam.list());
+        CommonPage<MailOrder> mailOrderCommonPage = CommonPage.restPage(orderPage);
+        return CommonResult.success(mailOrderCommonPage);
     }
 
     @ApiOperation(value = "2、订单导出")

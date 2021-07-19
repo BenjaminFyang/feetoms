@@ -8,7 +8,6 @@ import com.crm.oms.dto.AddUmsAdmin;
 import com.crm.oms.dto.UmsAdminLoginParam;
 import com.crm.oms.dto.UpdateAdminParam;
 import com.crm.oms.dto.UpdateUmsAdminParam;
-import com.crm.oms.mapper.UmsAdminMapper;
 import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.model.UmsPermission;
 import com.crm.oms.service.UmsAdminService;
@@ -19,7 +18,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -34,9 +35,6 @@ public class UmsAdminController {
 
     @Resource
     private UmsAdminService adminService;
-
-    @Resource
-    private UmsAdminMapper umsAdminMapper;
 
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
@@ -57,6 +55,12 @@ public class UmsAdminController {
         tokenMap.put("token", token);
         tokenMap.put("tokenHead", tokenHead);
         return CommonResult.success(tokenMap);
+    }
+
+    @ApiOperation(value = "获取当前用户的登陆信息")
+    @RequestMapping(value = "/getInformation", method = RequestMethod.POST)
+    public CommonResult<UmsAdmin> getInformation() {
+        return CommonResult.success(TransmittableThreadLocalContext.getAuthDataBo());
     }
 
     @ApiOperation("获取用户所有权限（包括+权限）")
@@ -105,7 +109,6 @@ public class UmsAdminController {
 
 
     public static List<UmsPermission> list2Tree(List<UmsPermission> treeNodeList) {
-
         Map<Long, List<UmsPermission>> nodeByParentIdMap = treeNodeList.stream().collect(Collectors.groupingBy(UmsPermission::getPid));
         return treeNodeList.stream().filter(treeNode -> treeNode.getId().equals(0L))
                 .peek(node -> node.setChildren(nodeByParentIdMap.get(node.getId()))).collect(Collectors.toList());

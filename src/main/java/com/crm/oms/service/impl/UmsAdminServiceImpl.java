@@ -2,9 +2,11 @@ package com.crm.oms.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.crm.oms.common.utils.JwtTokenUtil;
+import com.crm.oms.common.utils.TransmittableThreadLocalContext;
 import com.crm.oms.dto.AddUmsAdmin;
 import com.crm.oms.dto.UpdateAdminParam;
 import com.crm.oms.dto.UpdateUmsAdminParam;
@@ -59,13 +61,9 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
 
     @Override
     public UmsAdmin getAdminByUsername(String username) {
-        UmsAdminExample example = new UmsAdminExample();
-        example.createCriteria().andUsernameEqualTo(username);
-        List<UmsAdmin> adminList = adminMapper.selectByExample(example);
-        if (adminList != null && adminList.size() > 0) {
-            return adminList.get(0);
-        }
-        return null;
+        LambdaQueryWrapper<UmsAdmin> umsAdminMapperLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        umsAdminMapperLambdaQueryWrapper.eq(UmsAdmin::getUsername, username);
+        return adminMapper.selectOne(umsAdminMapperLambdaQueryWrapper);
     }
 
     @Override
@@ -101,6 +99,13 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper, UmsAdmin> i
             if (!passwordEncoder.matches(password, userDetails.getPassword())) {
                 throw new BadCredentialsException("密码不正确");
             }
+
+            UmsAdmin umsAdmin = TransmittableThreadLocalContext.getAuthDataBo();
+            Date dueDate = umsAdmin.getDueDate();
+            if (dueDate.compareTo(new Date()) < 0) {
+                throw new ApiException("账户已到期，请联系管理员续费");
+            }
+
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             token = jwtTokenUtil.generateToken(userDetails);

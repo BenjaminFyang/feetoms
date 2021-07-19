@@ -1,18 +1,9 @@
 package com.crm.oms.model;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-
-import java.util.Date;
-
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
-
-import java.io.Serializable;
-
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.crm.oms.common.utils.ShowMail;
 import com.crm.oms.enums.DeliveryStatusEnum;
 import com.crm.oms.enums.IsLockedEnum;
@@ -25,7 +16,12 @@ import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * <p>
@@ -115,10 +111,13 @@ public class MailOrder implements Serializable {
     private Date updateTime;
 
 
-    public void build0(ShowMail showMail) throws MessagingException, UnsupportedEncodingException {
+    public MailOrder() {
+    }
+
+    public void build0(ShowMail showMail, OrderStatusEnum orderStatusEnum) throws MessagingException, UnsupportedEncodingException {
 
         String bodyText = showMail.getBodyText();
-        this.orderNumber = getOrderNumber(showMail);
+        this.orderNumber = getOrderNumber(bodyText);
         this.sku = null;
         this.productPicture = null;
         this.size = getSize(bodyText);
@@ -126,7 +125,7 @@ public class MailOrder implements Serializable {
         this.originalPrice = new BigDecimal(getOriginalPrice(bodyText));
         this.paymentAmount = new BigDecimal(getPaymentAmount(bodyText));
         this.trackingEmail = showMail.getMailAddress("to");
-        this.orderState = OrderStatusEnum.TYPE0.getCode();
+        this.orderState = orderStatusEnum.getCode();
         this.carrierCompany = null;
         this.address = bodyText.substring(bodyText.indexOf("Shipping to:") + 12, bodyText.indexOf("http")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
         this.foreignWaybillNumber = null;
@@ -135,11 +134,42 @@ public class MailOrder implements Serializable {
         this.deliveryStatus = DeliveryStatusEnum.TYPE0.getCode();
         this.orderTime = getOrderTime(bodyText);
         this.deliveryTime = null;
-        this.note = OrderStatusEnum.TYPE0.getMessage();
+        this.note = orderStatusEnum.getMessage();
         this.isLocked = IsLockedEnum.TYPE0.getCode();
         this.createTime = new Date();
         this.updateTime = new Date();
     }
+
+    public void build2(ShowMail showMail, Long mailOrderId, OrderStatusEnum orderStatusEnum) throws MessagingException, ParseException {
+        this.id = mailOrderId;
+        this.sku = null;
+        this.productPicture = null;
+        this.orderState = orderStatusEnum.getCode();
+        this.carrierCompany = null;
+        this.deliveryTime = getDeliveryTime(showMail);
+        this.note = orderStatusEnum.getMessage();
+        this.updateTime = new Date();
+    }
+
+    public void build3(Long mailOrderId, OrderStatusEnum orderStatusEnum) {
+        this.id = mailOrderId;
+        this.sku = null;
+        this.productPicture = null;
+        this.orderState = orderStatusEnum.getCode();
+        this.carrierCompany = null;
+        this.note = orderStatusEnum.getMessage();
+        this.updateTime = new Date();
+    }
+
+
+
+
+    private Date getDeliveryTime(ShowMail showMail) throws MessagingException, ParseException {
+        String sentDate = showMail.getSentDate();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.parse(sentDate);
+    }
+
 
     @NotNull
     private String getOrderTime(String bodyText) {
@@ -173,11 +203,42 @@ public class MailOrder implements Serializable {
     }
 
     @NotNull
-    private String getOrderNumber(ShowMail showMail) throws MessagingException, UnsupportedEncodingException {
-        // 得到订单号
-        String subject = showMail.getSubject();
-        return subject.substring(subject.indexOf("(") + 2, subject.indexOf(")"));
+    private String getOrderNumber(String bodyText) {
+        return bodyText.substring(bodyText.indexOf("Order Number") + 13, bodyText.indexOf("Order Date")).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ");
+    }
+
+    public static String getOrderNumber(ShowMail showMail) {
+        String bodyText = showMail.getBodyText();
+        return bodyText.substring(bodyText.indexOf("Order Number") + 13, bodyText.indexOf("Order Date")).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ");
     }
 
 
+    @Override
+    public String toString() {
+        return "MailOrder{" +
+                "id=" + id +
+                ", orderNumber='" + orderNumber + '\'' +
+                ", orderEmail='" + orderEmail + '\'' +
+                ", sku='" + sku + '\'' +
+                ", productPicture='" + productPicture + '\'' +
+                ", size='" + size + '\'' +
+                ", orderWebsite=" + orderWebsite +
+                ", originalPrice=" + originalPrice +
+                ", paymentAmount=" + paymentAmount +
+                ", trackingEmail='" + trackingEmail + '\'' +
+                ", orderState=" + orderState +
+                ", carrierCompany=" + carrierCompany +
+                ", address='" + address + '\'' +
+                ", foreignWaybillNumber='" + foreignWaybillNumber + '\'' +
+                ", waybillStatus=" + waybillStatus +
+                ", transitStatus=" + transitStatus +
+                ", deliveryStatus=" + deliveryStatus +
+                ", orderTime='" + orderTime + '\'' +
+                ", deliveryTime=" + deliveryTime +
+                ", note='" + note + '\'' +
+                ", isLocked=" + isLocked +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
+    }
 }

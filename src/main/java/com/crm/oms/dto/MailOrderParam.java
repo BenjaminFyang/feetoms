@@ -61,6 +61,9 @@ public class MailOrderParam implements Serializable {
     private Date endDeliveryTime;
 
 
+    public MailOrderParam() {
+    }
+
     /**
      * 订单信息列表查询数据封装.
      *

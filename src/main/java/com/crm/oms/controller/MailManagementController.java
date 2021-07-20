@@ -66,7 +66,7 @@ public class MailManagementController {
     @RequestMapping(value = "/isPass/{mailManagementId}", method = RequestMethod.POST)
     public CommonResult<String> isPass(@PathVariable Long mailManagementId) {
         mailManagementService.isPass(mailManagementId);
-        return CommonResult.failed("邮箱设置存在异常，请检查授权码是否输入正确，或请手动登陆邮箱查看IMAP/SMTP服务是否正确开启");
+        return CommonResult.failed("");
     }
 }
 

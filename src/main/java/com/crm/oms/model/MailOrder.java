@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jsoup.Jsoup;
@@ -26,7 +27,10 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -36,6 +40,8 @@ import java.util.Date;
  * @author fangyang
  * @since 2021-07-12
  */
+
+@Slf4j
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("mail_order")
@@ -170,6 +176,24 @@ public class MailOrder implements Serializable {
         this.deliveryTime = getDeliveryTime(showMail);
         this.note = orderStatusEnum.getMessage();
         this.updateTime = new Date();
+        this.foreignWaybillNumber = getForeignWaybillNumber(showMail);
+    }
+
+    /**
+     * 得到海外运单号.
+     *
+     * @param showMail the showMail
+     * @return the String
+     */
+    private String getForeignWaybillNumber(ShowMail showMail) {
+        try {
+            String bodyText = showMail.getBodyText();
+            String replaceAll = bodyText.substring(bodyText.indexOf("Tracking Number"), bodyText.indexOf("Track Package")).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ");
+            List<String> stringList = Arrays.stream(replaceAll.split(" ")).collect(Collectors.toList());
+            return stringList.get(3);
+        } catch (Exception exception) {
+            return null;
+        }
     }
 
     public void build3(Long mailOrderId, OrderStatusEnum orderStatusEnum) {
@@ -190,12 +214,22 @@ public class MailOrder implements Serializable {
     }
 
 
-    @NotNull
+    /**
+     * 获取下单时间.
+     *
+     * @param bodyText the string
+     * @return the String
+     */
     private String getOrderTime(String bodyText) {
-        int orderDateIndex = bodyText.indexOf("Order Date");
-        int index = bodyText.indexOf(", 2021");
-        index = bodyText.indexOf(", 2021", index + 1);
-        return bodyText.substring(orderDateIndex + 10, index).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ") + " 2021";
+        try {
+            int orderDateIndex = bodyText.indexOf("Order Date");
+            int index = bodyText.indexOf(", 2021");
+            index = bodyText.indexOf(", 2021", index + 1);
+            return bodyText.substring(orderDateIndex + 10, index).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ") + " 2021";
+        } catch (Exception exception) {
+            log.error("getOrderTime获取下单时间异常");
+            return null;
+        }
     }
 
     private String getPaymentAmount(String bodyText) {
@@ -259,5 +293,50 @@ public class MailOrder implements Serializable {
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
+    }
+
+
+    public static void main(String[] args) {
+
+        String bodyText = "It shipped. Here's the tracking information. &zwnj; &zwnj; &zwnj; &zwnj; &zwnj;\n" +
+                " &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj;\n" +
+                " &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj;\n" +
+                " &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj;\n" +
+                " &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj;\n" +
+                " &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj;\n" +
+                " &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj;\n" +
+                " &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; &zwnj; \n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "Tracking Number\n" +
+                "\n" +
+                "\n" +
+                "http://click.official.nike.com/?qs=7ac4896d1459047eba8dd51d628805286b18d4210206119c98f5872d486f86398d359231ab131ebb7b7273d0db8642ec745d2d7aff4ae68c0b2152ab26bfcad2 \n" +
+                "506850199371 \n" +
+                "\n" +
+                "&zwnj;\n" +
+                "http://click.official.nike.com/?qs=7ac4896d1459047e8ac5e54035180a1b2391b3ce35917bdf67fa952825ae4bb21dd4c762dfaa1b1a0bd0b019013a890e75465a6146b30c22dacbce472d14c5da \n" +
+                " Track Package\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "http://click.official.nike.com/?qs=7ac4896d1459047ecc7434bf8065277ad8b0eb57f949af313376ec190f17879a35a592f181dc2bfd8097439414cd4553efa1cc595f2afe986291b3a85b2fb18a \n" +
+                "\n" +
+                "It's On Its Way.\n";
+
+
+        String replaceAll = bodyText.substring(bodyText.indexOf("Tracking Number"), bodyText.indexOf("Track Package")).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ");
+        List<String> stringList = Arrays.stream(replaceAll.split(" ")).collect(Collectors.toList());
+        System.out.println(stringList.get(3));
+
+
     }
 }

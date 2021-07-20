@@ -116,6 +116,9 @@ public class OrderMailTask {
                     LambdaQueryWrapper<MailOrderUkNumber> numberLambdaQueryWrapper = lambdaQueryWrapper.eq(MailOrderUkNumber::getUkNumber, uk);
                     List<MailOrderUkNumber> mailOrderUkNumberList = mailOrderUkNumberMapper.selectList(numberLambdaQueryWrapper);
                     if (!CollectionUtils.isEmpty(mailOrderUkNumberList)) {
+                        log.error("邮件已经解析过了");
+                        continue;
+                    } else {
                         log.error("开始解析邮件插入订单uk={}", uk);
                         // 首次下单 已下单d
                         objects.add(subject);
@@ -135,11 +138,9 @@ public class OrderMailTask {
                             mailOrderUkNumber.setUpdateTime(new Date());
                             mailOrderUkNumber.setCreateTime(new Date());
                             mailOrderUkNumberMapper.insert(mailOrderUkNumber);
+                            continue;
                         }
-
-                        continue;
                     }
-
 
                     // 已发货
                     if (subject.contains("Looking for Your Nike Order")) {

@@ -22,7 +22,8 @@ public enum OrderStatusEnum {
     TYPE3(3, "派件中"),
     TYPE4(4, "派件延迟"),
     TYPE5(5, "已签收"),
-    TYPE6(6, "召回");
+    TYPE6(6, "召回"),
+    TYPE7(7, "异常");
 
     private Integer code;
     private String message;

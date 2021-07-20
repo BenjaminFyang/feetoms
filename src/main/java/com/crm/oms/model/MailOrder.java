@@ -82,7 +82,7 @@ public class MailOrder implements Serializable {
     @ApiModelProperty(value = "追踪邮箱")
     private String trackingEmail;
 
-    @ApiModelProperty(value = "订单状态 0:已下单 1:取消 2:已发货 3:派件中 4:派件延迟 5:已签收 6:召回")
+    @ApiModelProperty(value = "订单状态 0:已下单 1:取消 2:已发货 3:派件中 4:派件延迟 5:已签收 6:召回 7:异常")
     private Integer orderState;
 
     @ApiModelProperty(value = "承运公司 0:待反馈 1:FedEx 2:UPS")
@@ -167,7 +167,7 @@ public class MailOrder implements Serializable {
         return productPicture;
     }
 
-    public void build2(ShowMail showMail, Long mailOrderId, OrderStatusEnum orderStatusEnum) throws MessagingException, ParseException {
+    public void build2(ShowMail showMail, Long mailOrderId, OrderStatusEnum orderStatusEnum) throws Exception {
         this.id = mailOrderId;
         this.sku = null;
         this.productPicture = null;
@@ -207,7 +207,7 @@ public class MailOrder implements Serializable {
     }
 
 
-    private Date getDeliveryTime(ShowMail showMail) throws MessagingException, ParseException {
+    private Date getDeliveryTime(ShowMail showMail) throws Exception {
         String sentDate = showMail.getSentDate();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.parse(sentDate);
@@ -221,15 +221,11 @@ public class MailOrder implements Serializable {
      * @return the String
      */
     private String getOrderTime(String bodyText) {
-        try {
-            int orderDateIndex = bodyText.indexOf("Order Date");
-            int index = bodyText.indexOf(", 2021");
-            index = bodyText.indexOf(", 2021", index + 1);
-            return bodyText.substring(orderDateIndex + 10, index).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ") + " 2021";
-        } catch (Exception exception) {
-            log.error("getOrderTime获取下单时间异常");
-            return null;
-        }
+        int orderDateIndex = bodyText.indexOf("Order Date");
+        int index = bodyText.indexOf(", 2021");
+        index = bodyText.indexOf(", 2021", index + 1);
+        return bodyText.substring(orderDateIndex + 10, index).replaceAll("\r\n|\r|\n", " ").replaceAll(" +", " ") + " 2021";
+
     }
 
     private String getPaymentAmount(String bodyText) {
@@ -238,10 +234,7 @@ public class MailOrder implements Serializable {
 
     @NotNull
     private String getOriginalPrice(String bodyText) {
-        String substring = bodyText.substring(bodyText.indexOf("Subtotal") + 9, bodyText.indexOf("Gift")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
-
-        System.out.println(substring);
-        return substring;
+        return bodyText.substring(bodyText.indexOf("Subtotal") + 9, bodyText.indexOf("Gift")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
     }
 
     private Integer getOrderWebsite(ShowMail showMail) throws MessagingException {

@@ -30,6 +30,8 @@ import javax.annotation.Resource;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -105,12 +107,25 @@ public class OrderMailTask {
                 List<Message> messageList = filterMessage(getWEMessage(host, username, password, protocol), null, startDate);
                 for (Message message : messageList) {
                     ShowMail showMail = new ShowMail((MimeMessage) message);
-                    showMail.getMailContent(message);
 
+                    // 发送主题
+                    String subject = showMail.getSubject();
+
+                    // 发送时间
+                    String sentDate = showMail.getSentDate();
+
+                    // 发送人地址
+                    String from = showMail.getFrom();
+
+                    // 收件人
+                    String mailAddress = showMail.getMailAddress("to");
+
+
+                    showMail.getMailContent(message);
                     // 得到当前邮件的唯一k
                     String uk = ((MimeMessage) message).getMessageID();
 //                    String uk = messageID.substring(messageID.indexOf("<") + 1, messageID.indexOf(".xt.local"));
-                    String subject = showMail.getSubject();
+
 
                     LambdaQueryWrapper<MailOrderUkNumber> lambdaQueryWrapper = new LambdaQueryWrapper<>();
                     LambdaQueryWrapper<MailOrderUkNumber> numberLambdaQueryWrapper = lambdaQueryWrapper.eq(MailOrderUkNumber::getUkNumber, uk);
@@ -120,24 +135,27 @@ public class OrderMailTask {
                         continue;
                     } else {
                         log.error("开始解析邮件插入订单uk={}", uk);
-                        // 首次下单 已下单d
+                        // 首次下单 已下单
                         objects.add(subject);
                         if (subject.contains("Thank You for Your Order")) {
-                            // 开始封装邮件的订单
-                            MailOrder mailOrder = new MailOrder();
-                            mailOrder.build0(showMail, OrderStatusEnum.TYPE0);
-                            mailOrderService.save(mailOrder);
+                            try {
+                                // 开始封装邮件的订单
+                                MailOrder mailOrder = new MailOrder();
+                                mailOrder.build0(showMail, OrderStatusEnum.TYPE0);
+                                mailOrderService.save(mailOrder);
 
-                            // 增加操作日志
-                            mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE0);
+                                // 增加操作日志
+                                mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE0);
 
-                            // 增加邮件订单标识信息
-                            MailOrderUkNumber mailOrderUkNumber = new MailOrderUkNumber();
-                            mailOrderUkNumber.setMailOrderId(mailOrder.getId());
-                            mailOrderUkNumber.setUkNumber(uk);
-                            mailOrderUkNumber.setUpdateTime(new Date());
-                            mailOrderUkNumber.setCreateTime(new Date());
-                            mailOrderUkNumberMapper.insert(mailOrderUkNumber);
+                                // 增加邮件订单标识信息
+                                buildEmail(uk, mailOrder);
+                            } catch (Exception exception) {
+                                log.error("OrderMailTask邮件解析已下单异常请核实subject={},sentDate={},mailAddress={}", subject, sentDate, mailAddress, exception);
+
+
+                                // todo 将数据插入表中
+                            }
+
                             continue;
                         }
                     }
@@ -156,11 +174,25 @@ public class OrderMailTask {
                         }
 
                         MailOrder mailOrder = new MailOrder();
-                        mailOrder.build2(showMail, mailOrderList.get(0).getId(), OrderStatusEnum.TYPE2);
-                        mailOrderService.updateById(mailOrder);
+                        try {
+                            mailOrder.build2(showMail, mailOrderList.get(0).getId(), OrderStatusEnum.TYPE2);
 
-                        // 增加操作日志
-                        mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE2);
+                            mailOrderService.updateById(mailOrder);
+
+                            // 增加操作日志
+                            mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE2);
+
+                            // 增加邮件订单标识信息
+                            buildEmail(uk, mailOrder);
+
+                        } catch (Exception exception) {
+                            log.error("OrderMailTask邮件解析已发货异常请核实subject={},sentDate={},mailAddress={}", subject, sentDate, mailAddress, exception);
+                            mailOrder.setOrderState(OrderStatusEnum.TYPE7.getCode());
+                            mailOrderService.updateById(mailOrder);
+                            continue;
+                        }
+
+
                     }
 
                     // 派件中
@@ -177,11 +209,21 @@ public class OrderMailTask {
                         }
 
                         MailOrder mailOrder = new MailOrder();
-                        mailOrder.build3(orderServiceOne.getId(), OrderStatusEnum.TYPE3);
-                        mailOrderService.updateById(mailOrder);
+                        try {
+                            mailOrder.build3(orderServiceOne.getId(), OrderStatusEnum.TYPE3);
+                            mailOrderService.updateById(mailOrder);
 
-                        // 增加操作日志
-                        mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE3);
+                            // 增加操作日志
+                            mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE3);
+
+                            // 增加邮件订单标识信息
+                            buildEmail(uk, mailOrder);
+                        } catch (Exception exception) {
+                            log.error("OrderMailTask邮件解析派件中异常请核实subject={},sentDate={},mailAddress={}", subject, sentDate, mailAddress, exception);
+                            mailOrder.setOrderState(OrderStatusEnum.TYPE7.getCode());
+                            mailOrderService.updateById(mailOrder);
+                            continue;
+                        }
                     }
 
                     // 派件延迟
@@ -197,11 +239,21 @@ public class OrderMailTask {
                         }
 
                         MailOrder mailOrder = new MailOrder();
-                        mailOrder.build3(orderServiceOne.getId(), OrderStatusEnum.TYPE4);
-                        mailOrderService.updateById(mailOrder);
+                        try {
+                            mailOrder.build3(orderServiceOne.getId(), OrderStatusEnum.TYPE4);
+                            mailOrderService.updateById(mailOrder);
 
-                        // 增加操作日志
-                        mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE4);
+                            // 增加操作日志
+                            mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE4);
+
+                            // 增加邮件订单标识信息
+                            buildEmail(uk, mailOrder);
+                        } catch (Exception exception) {
+                            log.error("OrderMailTask邮件解析派件延迟异常请核实subject={},sentDate={},mailAddress={}", subject, sentDate, mailAddress, exception);
+                            mailOrder.setOrderState(OrderStatusEnum.TYPE7.getCode());
+                            mailOrderService.updateById(mailOrder);
+                            continue;
+                        }
                     }
 
 
@@ -218,11 +270,21 @@ public class OrderMailTask {
                         }
 
                         MailOrder mailOrder = new MailOrder();
-                        mailOrder.build3(mailOrderList.get(0).getId(), OrderStatusEnum.TYPE5);
-                        mailOrderService.updateById(mailOrder);
+                        try {
+                            mailOrder.build3(mailOrderList.get(0).getId(), OrderStatusEnum.TYPE5);
+                            mailOrderService.updateById(mailOrder);
 
-                        // 增加操作日志
-                        mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE5);
+                            // 增加操作日志
+                            mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE5);
+
+                            // 增加邮件订单标识信息
+                            buildEmail(uk, mailOrder);
+                        } catch (Exception exception) {
+                            log.error("OrderMailTask邮件解析已签收异常请核实subject={},sentDate={},mailAddress={}", subject, sentDate, mailAddress, exception);
+                            mailOrder.setOrderState(OrderStatusEnum.TYPE7.getCode());
+                            mailOrderService.updateById(mailOrder);
+                            continue;
+                        }
                     }
 
                     // 召回
@@ -238,13 +300,21 @@ public class OrderMailTask {
                         }
 
                         MailOrder mailOrder = new MailOrder();
-                        mailOrder.build3(orderServiceOne.getId(), OrderStatusEnum.TYPE6);
-                        mailOrderService.updateById(mailOrder);
+                        try {
+                            mailOrder.build3(orderServiceOne.getId(), OrderStatusEnum.TYPE6);
+                            mailOrderService.updateById(mailOrder);
 
-                        // 增加操作日志
-                        mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE6);
+                            // 增加操作日志
+                            mailOrderRecordService.insert(mailOrder.getId(), MailOrderRecordEnum.TYPE6);
+
+                            // 增加邮件订单标识信息
+                            buildEmail(uk, mailOrder);
+                        } catch (Exception exception) {
+                            log.error("OrderMailTask邮件解析召回异常请核实subject={},sentDate={},mailAddress={}", subject, sentDate, mailAddress, exception);
+                            mailOrder.setOrderState(OrderStatusEnum.TYPE7.getCode());
+                            mailOrderService.updateById(mailOrder);
+                        }
                     }
-
 
                 }
 
@@ -255,6 +325,15 @@ public class OrderMailTask {
 
         return objects;
 
+    }
+
+    private void buildEmail(String uk, MailOrder mailOrder) {
+        MailOrderUkNumber mailOrderUkNumber = new MailOrderUkNumber();
+        mailOrderUkNumber.setMailOrderId(mailOrder.getId());
+        mailOrderUkNumber.setUkNumber(uk);
+        mailOrderUkNumber.setUpdateTime(new Date());
+        mailOrderUkNumber.setCreateTime(new Date());
+        mailOrderUkNumberMapper.insert(mailOrderUkNumber);
     }
 
 }

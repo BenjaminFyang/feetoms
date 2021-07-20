@@ -14,6 +14,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import javax.mail.MessagingException;
 import java.io.Serializable;
@@ -118,8 +123,9 @@ public class MailOrder implements Serializable {
 
         String bodyText = showMail.getBodyText();
         this.orderNumber = getOrderNumber(bodyText);
+
         this.sku = null;
-        this.productPicture = null;
+        this.productPicture = getString(bodyText);
         this.size = getSize(bodyText);
         this.orderWebsite = getOrderWebsite(showMail);
         this.originalPrice = new BigDecimal(getOriginalPrice(bodyText));
@@ -138,6 +144,21 @@ public class MailOrder implements Serializable {
         this.isLocked = IsLockedEnum.TYPE0.getCode();
         this.createTime = new Date();
         this.updateTime = new Date();
+    }
+
+    @Nullable
+    private String getString(String bodyText) {
+        String productPicture = null;
+        Document doc = Jsoup.parse(bodyText);
+        Elements images = doc.select("img[src~=(?i)]");
+        for (Element image : images) {
+            String alt = image.attr("alt");
+            if (alt.equals("product image")) {
+                productPicture = image.attr("src");
+                break;
+            }
+        }
+        return productPicture;
     }
 
     public void build2(ShowMail showMail, Long mailOrderId, OrderStatusEnum orderStatusEnum) throws MessagingException, ParseException {

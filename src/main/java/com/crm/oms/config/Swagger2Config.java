@@ -53,7 +53,7 @@ public class Swagger2Config {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("SwaggerUI演示")
-                .description("mall-tiny")
+                .description("feet大脚")
                 .contact(new Contact("方洋", "http://mail.qq.com", "18069898338@qq.com"))
                 .version("1.0")
                 .build();
@@ -70,14 +70,14 @@ public class Swagger2Config {
     private List<SecurityContext> securityContexts() {
         //设置需要登录认证的路径
         List<SecurityContext> result = new ArrayList<>();
-        result.add(getContextByPath("/brand/.*"));
+        result.add(getContextByPath());
         return result;
     }
 
-    private SecurityContext getContextByPath(String pathRegex) {
+    private SecurityContext getContextByPath() {
         return SecurityContext.builder()
                 .securityReferences(defaultAuth())
-                .forPaths(PathSelectors.regex(pathRegex))
+                .forPaths(PathSelectors.regex("/feet/.*"))
                 .build();
     }
 

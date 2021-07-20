@@ -74,6 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .permitAll()
                 .anyRequest()// 除上面外的所有请求全部需要鉴权认证
                 .authenticated();
+
         // 禁用缓存
         httpSecurity.headers().cacheControl();
 
@@ -82,10 +83,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 添加自定义未授权和未登录结果返回
         httpSecurity.exceptionHandling()
-
                 // 当用户没有权限时的处理器，用于返回JSON格式的处理结果.
                 .accessDeniedHandler(restfulAccessDeniedHandler)
-
                 // 当未登录或者token失效时，返回JSON格式的处理结果.
                 .authenticationEntryPoint(restAuthenticationEntryPoint);
     }

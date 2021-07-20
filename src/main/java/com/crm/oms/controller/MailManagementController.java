@@ -66,7 +66,7 @@ public class MailManagementController {
     @RequestMapping(value = "/isPass/{mailManagementId}", method = RequestMethod.POST)
     public CommonResult<String> isPass(@PathVariable Long mailManagementId) {
         mailManagementService.isPass(mailManagementId);
-        return CommonResult.failed("");
+        return CommonResult.success("账号测试通过");
     }
 }
 

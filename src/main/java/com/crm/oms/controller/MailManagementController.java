@@ -7,7 +7,6 @@ import com.crm.oms.common.api.CommonResult;
 import com.crm.oms.dto.MailManagementEditParam;
 import com.crm.oms.dto.MailManagementParam;
 import com.crm.oms.model.MailManagement;
-import com.crm.oms.model.UmsAdmin;
 import com.crm.oms.service.MailManagementService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

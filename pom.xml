@@ -165,12 +165,13 @@
             <artifactId>dozer</artifactId>
             <version>5.5.1</version>
         </dependency>
+
+
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>

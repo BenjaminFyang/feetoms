@@ -14,18 +14,18 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.lang.Nullable;
 
 import javax.mail.MessagingException;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -135,7 +135,7 @@ public class MailOrder implements Serializable {
         this.size = getSize(bodyText);
         this.orderWebsite = getOrderWebsite(showMail);
         this.originalPrice = new BigDecimal(getOriginalPrice(bodyText));
-        this.paymentAmount = new BigDecimal(getPaymentAmount(bodyText));
+        this.paymentAmount = getPaymentAmount(bodyText);
         this.trackingEmail = showMail.getMailAddress("to");
         this.orderState = orderStatusEnum.getCode();
         this.carrierCompany = null;
@@ -228,8 +228,26 @@ public class MailOrder implements Serializable {
 
     }
 
-    private String getPaymentAmount(String bodyText) {
-        return bodyText.substring(bodyText.indexOf("Card-") + 7, bodyText.indexOf("Shipping & Handling")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
+    /**
+     * 获得付款金额.
+     *
+     * @param bodyText the String
+     * @return the String
+     */
+    private BigDecimal getPaymentAmount(String bodyText) {
+        String replaceAll = bodyText.substring(bodyText.indexOf("Gift Card-"), bodyText.indexOf("Shipping & Handling")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
+        BigDecimal bigDecimal = BigDecimal.ZERO;
+        String[] split = replaceAll.split("GiftCard-");
+        for (String value : split) {
+            String s = value;
+            s = s.replaceAll("\\$", "");
+            if (StringUtils.isEmpty(s)) {
+                continue;
+            }
+            BigDecimal bigDecimal1 = new BigDecimal(s);
+            bigDecimal = bigDecimal.add(bigDecimal1);
+        }
+        return bigDecimal;
     }
 
     @NotNull
@@ -245,7 +263,13 @@ public class MailOrder implements Serializable {
 
     @NotNull
     private String getSize(String bodyText) {
-        return bodyText.substring(bodyText.indexOf("Size") + 5, bodyText.indexOf("Qty")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
+
+        try {
+            // 一个的时候解析
+            return bodyText.substring(bodyText.indexOf("Size") + 5, bodyText.indexOf("Qty")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
+        } catch (Exception exception) {
+            return bodyText.substring(bodyText.indexOf("Size") + 5, bodyText.indexOf("Order Number")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
+        }
     }
 
     @NotNull
@@ -286,5 +310,30 @@ public class MailOrder implements Serializable {
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
+    }
+
+
+    public static void main(String[] args) {
+
+
+        String bodyText = "\n" +
+                "Nike Court Borough Mid 2 Big Kids' Shoe$65.00\n" +
+                "\n" +
+                "Size 6.5Y\n" +
+                "\n" +
+                "\n" +
+                "Order Number\n" +
+                "\n" +
+                "\n" +
+                "C00647486199\n" +
+                "\n" +
+                "\n" +
+                "Order Date\n" +
+                "\n" +
+                "\n" +
+                "Jul 20, 2021\n";
+
+        String replaceAll = bodyText.substring(bodyText.indexOf("Size") + 5, bodyText.indexOf("Order Number")).replaceAll("\r\n|\r|\n", "").replaceAll(" +", "");
+        System.out.println(replaceAll);
     }
 }

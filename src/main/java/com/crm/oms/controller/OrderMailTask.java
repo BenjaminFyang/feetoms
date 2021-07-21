@@ -1,7 +1,6 @@
 package com.crm.oms.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.crm.oms.common.utils.ShowMail;
 import com.crm.oms.enums.MailOrderRecordEnum;
 import com.crm.oms.enums.MailTypeEnum;
@@ -10,17 +9,12 @@ import com.crm.oms.mapper.MailManagementMapper;
 import com.crm.oms.mapper.MailOrderUkNumberMapper;
 import com.crm.oms.model.MailManagement;
 import com.crm.oms.model.MailOrder;
-import com.crm.oms.model.MailOrderRecord;
 import com.crm.oms.model.MailOrderUkNumber;
-import com.crm.oms.service.*;
-import com.github.pagehelper.util.StringUtil;
+import com.crm.oms.service.MailOrderRecordService;
+import com.crm.oms.service.MailOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,18 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static com.crm.oms.common.utils.ShowMail.*;
+import static com.crm.oms.common.utils.ShowMail.filterMessage;
+import static com.crm.oms.common.utils.ShowMail.getWEMessage;
 
 /**
  * @author fangyang
